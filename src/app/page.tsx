@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { insertAdoption } from '@/db/clientTurso';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { string, z } from 'zod';
+import { TursoData } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -26,8 +28,10 @@ import {
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   description: z.string().min(2).max(500),
-  age: z.enum(['cachorro', 'joven', 'adulto', 'senior']),
-  type: z.enum(['dog', 'cat', 'other'])
+  age: z.enum(['puppy', 'young', 'adult', 'senior']),
+  type: z.enum(['dog', 'cat', 'other']),
+  size: z.enum(['small', 'medium', 'big']),
+  images: z.array(z.string()).optional()
 });
 
 export default function Home() {
@@ -41,13 +45,42 @@ export default function Home() {
 
   const [, setSelectedAge] = useState('');
   const [, setSelectedType] = useState('');
+  const [fileNames, setFileNames] = useState<string[]>([]);
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const { name, description, age, type, size } = values;
     console.log(values);
+
+    const adoptionData: TursoData = {
+      name,
+      description,
+      age,
+      type,
+      size
+    };
+
+    try {
+      const newAdoption = await insertAdoption(adoptionData);
+      console.log('Adoption inserted successfully:', newAdoption);
+      // Puedes realizar más acciones después de la inserción aquí
+    } catch (error) {
+      console.error('Error inserting adoption:', error);
+      // Puedes manejar el error de alguna manera aquí
+    }
   }
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: any
+  ) => {
+    const files = Array.from(e.target.files || []);
+    setFileNames(files.map((file) => file.name));
+    if (files.length > 0) {
+      setFileNames(fileNames);
+      field.onChange(fileNames);
+    }
+  };
   return (
     <Form {...form}>
       <form
@@ -110,9 +143,9 @@ export default function Home() {
                       <SelectValue placeholder='Edad' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='cachorro'>Cachorro</SelectItem>
-                      <SelectItem value='joven'>Adulto joven</SelectItem>
-                      <SelectItem value='adulto'>Adulto</SelectItem>
+                      <SelectItem value='puppy'>Cachorro</SelectItem>
+                      <SelectItem value='young'>Adulto joven</SelectItem>
+                      <SelectItem value='adult'>Adulto</SelectItem>
                       <SelectItem value='senior'>Anciano</SelectItem>
                     </SelectContent>
                   </Select>
@@ -144,6 +177,59 @@ export default function Home() {
                       <SelectItem value='dog'>Perro</SelectItem>
                       <SelectItem value='cat'>Gato</SelectItem>
                       <SelectItem value='other'>Otro</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className='flex justify-between'>
+          <FormField
+            control={form.control}
+            name='images'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imágenes</FormLabel>
+                <FormControl>
+                  <Input
+                    type='file'
+                    multiple
+                    onChange={(e) => handleFileChange(e, field)}
+                    id='fileInput'
+                  />
+                </FormControl>
+                <FormDescription>
+                  Selecciona tus imágenes públicas.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='size'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tamaño</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(value) => {
+                      setSelectedType(value);
+                      field.onChange(value);
+                    }}
+                  >
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Tamaño' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='small'>Pequeño</SelectItem>
+                      <SelectItem value='medium'>Mediano</SelectItem>
+                      <SelectItem value='big'>Grande</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
