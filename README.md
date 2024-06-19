@@ -1,6 +1,9 @@
 # ToDo:
 
-- mirar lo del pageClient para no exponer las variables de entorno en el cliente
+- ✅mirar lo del pageClient para no exponer las variables de entorno en el cliente
+- revisar eslint
+- crear la conexión con cloudinary para el almacenamiento de imágenes
+- crear una vista sencilla de todas las entradas de la base de datos para permitir eliminar y actualizar registros
 
 ## Formulario para la web de fido.
 
@@ -8,6 +11,7 @@
   todos los datos agregados van a una base de datos creada con **_TURSO_**
 
 - Las imágenes se guardan en cloudinary
+- Esta web se usa como complemento para la gestion de la web principal
 
 ### Instrucciones
 

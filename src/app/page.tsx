@@ -1,7 +1,7 @@
 'use client';
+import React from 'react';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { insertAdoption } from '@/db/clientTurso';
 import { useForm } from 'react-hook-form';
 import { string, z } from 'zod';
 import { TursoData } from '@/types';
@@ -59,17 +59,34 @@ export default function Home() {
       type,
       size
     };
+    console.log('hola');
 
     try {
-      const newAdoption = await insertAdoption(adoptionData);
-      console.log('Adoption inserted successfully:', newAdoption);
-      // Puedes realizar más acciones después de la inserción aquí
+      const response = await fetch('/api/adoption', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(adoptionData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // eslint-disable-next-line
+        console.log('Adoption inserted successfully:', result);
+        // Puedes realizar más acciones después de la inserción aquí
+      } else {
+        // eslint-disable-next-line
+        console.error('Error inserting adoption:', result.error);
+        // Manejar el error de alguna manera aquí
+      }
     } catch (error) {
+      // eslint-disable-next-line
       console.error('Error inserting adoption:', error);
-      // Puedes manejar el error de alguna manera aquí
+      // Manejar el error de alguna manera aquí
     }
   }
-
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: any
