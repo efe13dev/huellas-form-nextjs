@@ -1,7 +1,7 @@
 # ToDo:
 
 - ✅mirar lo del pageClient para no exponer las variables de entorno en el cliente
-- revisar eslint
+- ✅revisar eslint
 - crear la conexión con cloudinary para el almacenamiento de imágenes
 - crear una vista sencilla de todas las entradas de la base de datos para permitir eliminar y actualizar registros
 
