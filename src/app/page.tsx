@@ -1,9 +1,8 @@
 'use client';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { string, z } from 'zod';
+import { z } from 'zod';
 import { TursoData } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,11 +30,10 @@ const formSchema = z.object({
   age: z.enum(['puppy', 'young', 'adult', 'senior']),
   type: z.enum(['dog', 'cat', 'other']),
   size: z.enum(['small', 'medium', 'big']),
-  images: z.array(z.string()).optional()
+  photos: z.array(z.string()).optional()
 });
 
 export default function Home() {
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,23 +41,34 @@ export default function Home() {
     }
   });
 
-  const [, setSelectedAge] = useState('');
-  const [, setSelectedType] = useState('');
-  const [fileNames, setFileNames] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  // 2. Define a submit handler.
+  async function uploadToCloudinary(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Reemplaza '/api/cloudinary' con el endpoint real de Cloudinary si lo necesitas.
+    const response = await fetch('/api/cloudinary', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+    return data.secure_url;
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { name, description, age, type, size } = values;
-    console.log(values);
+    const photoUrls = await Promise.all(selectedFiles.map(uploadToCloudinary));
 
     const adoptionData: TursoData = {
       name,
       description,
       age,
       type,
-      size
+      size,
+      photos: photoUrls.length ? photoUrls : ['default-image']
     };
-    console.log('hola');
 
     try {
       const response = await fetch('/api/adoption', {
@@ -73,31 +82,23 @@ export default function Home() {
       const result = await response.json();
 
       if (response.ok) {
-        // eslint-disable-next-line
         console.log('Adoption inserted successfully:', result);
         // Puedes realizar más acciones después de la inserción aquí
       } else {
-        // eslint-disable-next-line
         console.error('Error inserting adoption:', result.error);
         // Manejar el error de alguna manera aquí
       }
     } catch (error) {
-      // eslint-disable-next-line
       console.error('Error inserting adoption:', error);
       // Manejar el error de alguna manera aquí
     }
   }
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: any
-  ) => {
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setFileNames(files.map((file) => file.name));
-    if (files.length > 0) {
-      setFileNames(fileNames);
-      field.onChange(fileNames);
-    }
+    setSelectedFiles(files);
   };
+
   return (
     <Form {...form}>
       <form
@@ -150,12 +151,7 @@ export default function Home() {
               <FormItem>
                 <FormLabel>Edad</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={(value) => {
-                      setSelectedAge(value);
-                      field.onChange(value);
-                    }}
-                  >
+                  <Select onValueChange={field.onChange}>
                     <SelectTrigger className='w-[180px]'>
                       <SelectValue placeholder='Edad' />
                     </SelectTrigger>
@@ -181,12 +177,7 @@ export default function Home() {
               <FormItem>
                 <FormLabel>Tipo</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={(value) => {
-                      setSelectedType(value);
-                      field.onChange(value);
-                    }}
-                  >
+                  <Select onValueChange={field.onChange}>
                     <SelectTrigger className='w-[180px]'>
                       <SelectValue placeholder='Tipo' />
                     </SelectTrigger>
@@ -208,7 +199,7 @@ export default function Home() {
         <div className='flex justify-between'>
           <FormField
             control={form.control}
-            name='images'
+            name='photos'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Imágenes</FormLabel>
@@ -216,7 +207,7 @@ export default function Home() {
                   <Input
                     type='file'
                     multiple
-                    onChange={(e) => handleFileChange(e, field)}
+                    onChange={handleFileChange}
                     id='fileInput'
                   />
                 </FormControl>
@@ -234,12 +225,7 @@ export default function Home() {
               <FormItem>
                 <FormLabel>Tamaño</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={(value) => {
-                      setSelectedType(value);
-                      field.onChange(value);
-                    }}
-                  >
+                  <Select onValueChange={field.onChange}>
                     <SelectTrigger className='w-[180px]'>
                       <SelectValue placeholder='Tamaño' />
                     </SelectTrigger>

@@ -5,12 +5,9 @@ export interface AnimalType {
   register_date: string;
   adopted: boolean;
   description: string;
-  photos?: string;
+  photos?: string[];
   type: string;
   size: string;
 }
 
-export type TursoData = Omit<
-  AnimalType,
-  'id' | 'register_date' | 'adopted' | 'photos'
->;
+export type TursoData = Omit<AnimalType, 'id' | 'register_date' | 'adopted'>;
