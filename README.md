@@ -2,7 +2,8 @@
 
 - ✅mirar lo del pageClient para no exponer las variables de entorno en el cliente
 - ✅revisar eslint
-- crear la conexión con cloudinary para el almacenamiento de imágenes
+- ✅crear la conexión con cloudinary para el almacenamiento de imágenes
+- crear función con sharp que optimice las imagenes y añada marca de agua antes de subir a cloudinary y eliminar los registros de la carpeta public una vez subidas las imagenes
 - crear una vista sencilla de todas las entradas de la base de datos para permitir eliminar y actualizar registros
 
 ## Formulario para la web de fido.

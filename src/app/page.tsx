@@ -54,7 +54,8 @@ export default function Home() {
     });
 
     const data = await response.json();
-    return data.secure_url;
+    console.log(data);
+    return data;
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
