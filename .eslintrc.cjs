@@ -4,7 +4,7 @@ module.exports = {
     'next/core-web-vitals',
     'plugin:react/recommended',
     'plugin:@next/next/recommended',
-    'love'
+    'plugin:react/jsx-runtime'
   ],
   rules: {
     'no-console': 'warn'

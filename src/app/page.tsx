@@ -54,6 +54,7 @@ export default function Home() {
     });
 
     const data = await response.json();
+
     console.log(data);
     return data;
   }
@@ -83,13 +84,16 @@ export default function Home() {
       const result = await response.json();
 
       if (response.ok) {
+        // eslint-disable-next-line
         console.log('Adoption inserted successfully:', result);
         // Puedes realizar más acciones después de la inserción aquí
       } else {
+        // eslint-disable-next-line
         console.error('Error inserting adoption:', result.error);
         // Manejar el error de alguna manera aquí
       }
     } catch (error) {
+      // eslint-disable-next-line
       console.error('Error inserting adoption:', error);
       // Manejar el error de alguna manera aquí
     }
