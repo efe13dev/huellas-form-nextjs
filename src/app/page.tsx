@@ -108,7 +108,7 @@ export default function Home() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8 max-w-xl flex flex-col pt-40 mx-auto min-h-screen'
+        className='space-y-8 max-w-xl flex flex-col pt-14 mx-auto min-h-screen'
       >
         <FormField
           control={form.control}
