@@ -1,75 +1,45 @@
-import { getAdoptions } from '@/db/clientTurso';
+'use client';
+import { useEffect, useState } from 'react';
 import { AnimalType } from '@/types';
-import { Button } from '@/components/ui/button';
+import AnimalTable from '@/components/AnimalTable';
 
-async function ListPage() {
-  const data = await getAdoptions();
-  const animals: AnimalType[] = data.rows;
+function ListPage() {
+  const [animals, setAnimals] = useState<AnimalType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/adoption');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setAnimals(data); // Actualiza el estado animals con los datos recibidos
+      } catch (error) {
+        //eslint-disable-next-line
+        console.error('Error fetching adoptions:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className='text-center text-xl pt-20 font-semibold'>Cargando...</div>
+    );
+  }
+
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-2xl font-bold mb-4 text-center'>
         Listado de Animales
       </h1>
-      <table className='min-w-full bg-white border border-gray-300'>
-        <thead>
-          <tr className='bg-gray-200'>
-            <th className='py-2 px-4 border-b border-gray-300 text-left'>
-              Nombre
-            </th>
-            <th className='py-2 px-4 border-b border-gray-300 text-left'>
-              Edad
-            </th>
-            <th className='py-2 px-4 border-b border-gray-300 text-left'>
-              Tipo
-            </th>
-            <th className='py-2 px-4 border-b border-gray-300 text-left'>
-              Fecha de registro
-            </th>
-            <th className='py-2 px-4 border-b border-gray-300 text-left'>
-              Adoptado
-            </th>
-            <th className='py-2 px-4 border-b border-gray-300 text-left'>
-              Eliminar
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {animals.map((animal, index) => (
-            <tr
-              key={index}
-              className='even:bg-gray-600 odd:bg-gray-400'
-            >
-              <td className='py-2 px-4 border-b border-gray-300'>
-                {animal.name}
-              </td>
-              <td className='py-2 px-4 border-b border-gray-300'>
-                {animal.age === 'puppy' && 'cachorro'}
-                {animal.age === 'young' && 'joven'}
-                {animal.age === 'adult' && 'adulto'}
-                {animal.age === 'senior' && 'anciano'}
-              </td>
-              <td className='py-2 px-4 border-b border-gray-300'>
-                {animal.type === 'dog' && 'Perro'}
-                {animal.type === 'cat' && 'Gato'}
-                {animal.type === 'other' && 'Otro'}
-              </td>
-              <td className='py-2 px-4 border-b border-gray-300'>
-                {animal.register_date}
-              </td>
-              <td className='py-2 px-4 border-b border-gray-300'>
-                <input
-                  type='checkbox'
-                  checked={!!animal.adopted}
-                  readOnly
-                />
-              </td>
-              <td className='py-2 px-2 border-b border-gray-300 text-left'>
-                <Button variant={'destructive'}>Eliminar</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      <AnimalTable animals={animals} />
     </div>
   );
 }

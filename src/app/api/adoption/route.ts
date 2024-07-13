@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { TursoData } from '@/types';
+import { Rows } from 'lucide-react';
 
 const client = createClient({
   url: process.env.TURSO_DATABASE_URL ?? '',
@@ -10,7 +11,6 @@ const client = createClient({
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  console.log('Request body:', body);
   const { name, description, type, size, age, photos } = body as TursoData;
   //const photos = 'default-image';
 
@@ -51,8 +51,18 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json(
-    { message: 'This endpoint only supports POST requests' },
-    { status: 405 }
-  );
+  try {
+    const result = await client.execute(
+      'SELECT * FROM animals ORDER BY id DESC'
+    );
+
+    return NextResponse.json(result.rows, { status: 200 });
+  } catch (error) {
+    // eslint-disable-next-line
+    console.error('Error fetching adoptions:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch adoptions' },
+      { status: 500 }
+    );
+  }
 }

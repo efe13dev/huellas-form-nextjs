@@ -37,7 +37,12 @@ export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: ''
+      name: '',
+      description: '',
+      age: undefined,
+      type: undefined,
+      size: undefined,
+      photos: []
     }
   });
 
@@ -82,11 +87,22 @@ export default function Home() {
       });
 
       const result = await response.json();
+      console.log(result);
 
       if (response.ok) {
         // eslint-disable-next-line
         console.log('Adoption inserted successfully:', result);
-        // Puedes realizar más acciones después de la inserción aquí
+        alert('Formulario enviado correctamente');
+        form.reset({
+          name: '',
+          description: '',
+          age: undefined,
+          type: undefined,
+          size: undefined,
+          photos: []
+        });
+        setSelectedFiles([]);
+        window.location.reload();
       } else {
         // eslint-disable-next-line
         console.error('Error inserting adoption:', result.error);
@@ -118,13 +134,11 @@ export default function Home() {
               <FormLabel>Nombre</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='shadcn'
+                  placeholder='Introduce un nombre ...'
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
@@ -137,13 +151,11 @@ export default function Home() {
               <FormLabel>Descripción</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder='shadcn'
+                  placeholder='Cuenta su historia ...'
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
@@ -157,8 +169,8 @@ export default function Home() {
                 <FormLabel>Edad</FormLabel>
                 <FormControl>
                   <Select onValueChange={field.onChange}>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Edad' />
+                    <SelectTrigger className='w-[200px]'>
+                      <SelectValue placeholder='Selecciona una edad' />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value='puppy'>Cachorro</SelectItem>
@@ -168,9 +180,7 @@ export default function Home() {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
+
                 <FormMessage />
               </FormItem>
             )}
@@ -183,8 +193,8 @@ export default function Home() {
                 <FormLabel>Tipo</FormLabel>
                 <FormControl>
                   <Select onValueChange={field.onChange}>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Tipo' />
+                    <SelectTrigger className='w-[200px]'>
+                      <SelectValue placeholder='Elige un animal' />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value='dog'>Perro</SelectItem>
@@ -193,9 +203,7 @@ export default function Home() {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
+
                 <FormMessage />
               </FormItem>
             )}
@@ -216,9 +224,7 @@ export default function Home() {
                     id='fileInput'
                   />
                 </FormControl>
-                <FormDescription>
-                  Selecciona tus imágenes públicas.
-                </FormDescription>
+
                 <FormMessage />
               </FormItem>
             )}
@@ -231,8 +237,8 @@ export default function Home() {
                 <FormLabel>Tamaño</FormLabel>
                 <FormControl>
                   <Select onValueChange={field.onChange}>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Tamaño' />
+                    <SelectTrigger className='w-[200px]'>
+                      <SelectValue placeholder='Selecciona un tamaño' />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value='small'>Pequeño</SelectItem>
@@ -241,9 +247,7 @@ export default function Home() {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
+
                 <FormMessage />
               </FormItem>
             )}
