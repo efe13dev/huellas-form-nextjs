@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@libsql/client';
 import { TursoData } from '@/types';
-import { Rows } from 'lucide-react';
 
 const client = createClient({
   url: process.env.TURSO_DATABASE_URL ?? '',
@@ -62,6 +61,38 @@ export async function GET() {
     console.error('Error fetching adoptions:', error);
     return NextResponse.json(
       { error: 'Failed to fetch adoptions' },
+      { status: 500 }
+    );
+  }
+}
+export async function DELETE(req: NextRequest) {
+  const body = await req.json();
+  const { id } = body;
+
+  if (!id || isNaN(Number(id))) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
+  try {
+    await client.batch(
+      [
+        {
+          sql: 'DELETE FROM animals WHERE id = ?',
+          args: [Number(id)]
+        }
+      ],
+      'write'
+    );
+
+    return NextResponse.json(
+      { message: 'Animal deleted successfully' },
+      { status: 200 }
+    );
+  } catch (error) {
+    //eslint-disable-next-line
+    console.error('Error deleting animal:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete animal', details: (error as Error).message },
       { status: 500 }
     );
   }
