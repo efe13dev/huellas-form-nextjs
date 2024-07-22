@@ -55,7 +55,6 @@ const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
               <input
                 type='checkbox'
                 checked={!!animal.adopted}
-                readOnly
               />
             </td>
             <td className='py-2 px-2 border-b border-gray-300 text-left'>

@@ -97,3 +97,33 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  const body = await req.json();
+  const { id } = body;
+
+  try {
+    if (id) {
+      await client.batch(
+        [
+          {
+            sql: 'UPDATE animals SET adopted = true WHERE id = id',
+            args: [Number(id)]
+          }
+        ],
+        'write'
+      );
+
+      return NextResponse.json(
+        { message: 'Animal updated successfully' },
+        { status: 201 }
+      );
+    } else {
+      throw new Error('Task field is required');
+    }
+  } catch (error) {
+    return NextResponse.json({
+      message: (error as { message: string }).message
+    });
+  }
+}
