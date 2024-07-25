@@ -98,17 +98,16 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  const { id } = body;
+export async function PATCH(req: NextRequest) {
+  const data = await req.json();
 
   try {
-    if (id) {
+    if (data.id) {
       await client.batch(
         [
           {
-            sql: 'UPDATE animals SET adopted = true WHERE id = id',
-            args: [Number(id)]
+            sql: 'UPDATE animals SET adopted = ? WHERE id = ?',
+            args: [data.adopted ? 1 : 0, Number(data.id)]
           }
         ],
         'write'

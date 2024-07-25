@@ -56,6 +56,28 @@ function ListPage() {
     }
   };
 
+  const handleUpdate = async (id: string, adopted: boolean) => {
+    try {
+      const response = await fetch(`/api/adoption/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          adopted: adopted,
+          id: id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update adopted status');
+      }
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error('Error updating adopted status:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className='text-center text-xl pt-20 font-semibold'>Cargando...</div>
@@ -71,6 +93,7 @@ function ListPage() {
       <AnimalTable
         animals={animals}
         onDelete={handleDelete}
+        onUpdate={handleUpdate}
       />
     </div>
   );

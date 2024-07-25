@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { AnimalType } from '@/types';
 
 interface AnimalTableProps {
   animals: AnimalType[];
   onDelete: (id: string) => Promise<void>;
+  onUpdate: (id: string, adopted: boolean) => Promise<void>;
 }
 
-const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
+const AnimalTable: React.FC<AnimalTableProps> = ({
+  animals,
+  onDelete,
+  onUpdate
+}) => {
+  const [localAnimals, setLocalAnimals] = useState(animals);
+
+  const handleAdoptedChange = async (id: string, adopted: boolean) => {
+    try {
+      await onUpdate(id, adopted);
+      setLocalAnimals((prevAnimals) =>
+        prevAnimals.map((animal) =>
+          animal.id === id ? { ...animal, adopted } : animal
+        )
+      );
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error('Failed to update adopted status:', error);
+    }
+  };
+
   return (
     <table className='min-w-full bg-white border border-gray-300'>
       <thead>
         <tr className='bg-gray-200'>
+          <th className='py-2 px-4 border-b border-gray-300 text-left'>
+            Imagen
+          </th>
           <th className='py-2 px-4 border-b border-gray-300 text-left'>
             Nombre
           </th>
@@ -29,11 +53,19 @@ const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
         </tr>
       </thead>
       <tbody>
-        {animals.map((animal) => (
+        {localAnimals.map((animal) => (
           <tr
             key={animal.id}
             className='even:bg-gray-600 odd:bg-gray-400'
           >
+            <td className='py-2 px-4 border-b border-gray-300'>
+              {/* eslint-disable-next-line @next/next/no-img-element*/}
+              <img
+                src={'/card-image.jpg'}
+                alt={animal.name}
+                className='w-10 h-12 object-cover'
+              />
+            </td>
             <td className='py-2 px-4 border-b border-gray-300'>
               {animal.name}
             </td>
@@ -55,6 +87,9 @@ const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
               <input
                 type='checkbox'
                 checked={!!animal.adopted}
+                onChange={(e) =>
+                  handleAdoptedChange(animal.id, e.target.checked)
+                }
               />
             </td>
             <td className='py-2 px-2 border-b border-gray-300 text-left'>
