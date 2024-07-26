@@ -14,6 +14,7 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
   onUpdate
 }) => {
   const [localAnimals, setLocalAnimals] = useState(animals);
+  console.log(JSON.parse(localAnimals[0].photos));
 
   const handleAdoptedChange = async (id: string, adopted: boolean) => {
     try {
@@ -61,7 +62,7 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
             <td className='py-2 px-4 border-b border-gray-300'>
               {/* eslint-disable-next-line @next/next/no-img-element*/}
               <img
-                src={'/card-image.jpg'}
+                src={animal.photos ? animal.photos[0] : '/default-image.jpg'}
                 alt={animal.name}
                 className='w-10 h-12 object-cover'
               />

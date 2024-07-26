@@ -1,4 +1,5 @@
 'use client';
+import Head from 'next/head';
 import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -8,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -61,7 +61,7 @@ export default function Home() {
     const data = await response.json();
 
     console.log(data);
-    return data;
+    return data.url;
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -74,7 +74,7 @@ export default function Home() {
       age,
       type,
       size,
-      photos: photoUrls.length ? photoUrls : ['default-image']
+      photos: photoUrls.length ? photoUrls : []
     };
 
     try {

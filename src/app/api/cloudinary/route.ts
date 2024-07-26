@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
       url: response.secure_url
     });
   } catch (error) {
+    // eslint-disable-next-line
     console.error('Error al procesar la imagen:', error);
     return NextResponse.json('Error al procesar la imagen', { status: 500 });
   }
