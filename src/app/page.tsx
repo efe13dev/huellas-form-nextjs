@@ -1,5 +1,4 @@
 'use client';
-import Head from 'next/head';
 import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

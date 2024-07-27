@@ -14,7 +14,6 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
   onUpdate
 }) => {
   const [localAnimals, setLocalAnimals] = useState(animals);
-  console.log(JSON.parse(localAnimals[0].photos));
 
   const handleAdoptedChange = async (id: string, adopted: boolean) => {
     try {
@@ -54,55 +53,72 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
         </tr>
       </thead>
       <tbody>
-        {localAnimals.map((animal) => (
-          <tr
-            key={animal.id}
-            className='even:bg-gray-600 odd:bg-gray-400'
-          >
-            <td className='py-2 px-4 border-b border-gray-300'>
-              {/* eslint-disable-next-line @next/next/no-img-element*/}
-              <img
-                src={animal.photos ? animal.photos[0] : '/default-image.jpg'}
-                alt={animal.name}
-                className='w-10 h-12 object-cover'
-              />
-            </td>
-            <td className='py-2 px-4 border-b border-gray-300'>
-              {animal.name}
-            </td>
-            <td className='py-2 px-4 border-b border-gray-300'>
-              {animal.age === 'puppy' && 'Cachorro'}
-              {animal.age === 'young' && 'Joven'}
-              {animal.age === 'adult' && 'Adulto'}
-              {animal.age === 'senior' && 'Anciano'}
-            </td>
-            <td className='py-2 px-4 border-b border-gray-300'>
-              {animal.type === 'dog' && 'Perro'}
-              {animal.type === 'cat' && 'Gato'}
-              {animal.type === 'other' && 'Otro'}
-            </td>
-            <td className='py-2 px-4 border-b border-gray-300'>
-              {animal.register_date}
-            </td>
-            <td className='py-2 px-4 border-b border-gray-300'>
-              <input
-                type='checkbox'
-                checked={!!animal.adopted}
-                onChange={(e) =>
-                  handleAdoptedChange(animal.id, e.target.checked)
-                }
-              />
-            </td>
-            <td className='py-2 px-2 border-b border-gray-300 text-left'>
-              <Button
-                className='bg-red-900'
-                onClick={() => onDelete(animal.id)}
-              >
-                Eliminar
-              </Button>
-            </td>
-          </tr>
-        ))}
+        {localAnimals.map((animal) => {
+          // Initialize photos as an empty array
+          let photos: string[] = [];
+
+          // Check if animal.photos is a string and parse it
+          if (typeof animal.photos === 'string') {
+            try {
+              photos = JSON.parse(animal.photos);
+            } catch (error) {
+              // eslint-disable-next-line
+              console.error('Failed to parse photos JSON:', error);
+            }
+          }
+
+          // Get the first photo URL or a default image
+          const photoUrl = photos.length > 0 ? photos[0] : '/default-image.jpg';
+          return (
+            <tr
+              key={animal.id}
+              className='even:bg-gray-600 odd:bg-gray-400'
+            >
+              <td className='py-2 px-4 border-b border-gray-300'>
+                {/* eslint-disable-next-line @next/next/no-img-element*/}
+                <img
+                  src={photoUrl}
+                  alt={animal.name}
+                  className='w-10 h-12 object-cover'
+                />
+              </td>
+              <td className='py-2 px-4 border-b border-gray-300'>
+                {animal.name}
+              </td>
+              <td className='py-2 px-4 border-b border-gray-300'>
+                {animal.age === 'puppy' && 'Cachorro'}
+                {animal.age === 'young' && 'Joven'}
+                {animal.age === 'adult' && 'Adulto'}
+                {animal.age === 'senior' && 'Anciano'}
+              </td>
+              <td className='py-2 px-4 border-b border-gray-300'>
+                {animal.type === 'dog' && 'Perro'}
+                {animal.type === 'cat' && 'Gato'}
+                {animal.type === 'other' && 'Otro'}
+              </td>
+              <td className='py-2 px-4 border-b border-gray-300'>
+                {animal.register_date}
+              </td>
+              <td className='py-2 px-4 border-b border-gray-300'>
+                <input
+                  type='checkbox'
+                  checked={!!animal.adopted}
+                  onChange={(e) =>
+                    handleAdoptedChange(animal.id, e.target.checked)
+                  }
+                />
+              </td>
+              <td className='py-2 px-2 border-b border-gray-300 text-left'>
+                <Button
+                  className='bg-red-900'
+                  onClick={() => onDelete(animal.id)}
+                >
+                  Eliminar
+                </Button>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
