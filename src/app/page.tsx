@@ -214,7 +214,7 @@ export default function Home() {
           <FormField
             control={form.control}
             name='photos'
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Imágenes</FormLabel>
                 <FormControl>
