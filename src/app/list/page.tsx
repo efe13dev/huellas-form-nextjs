@@ -17,7 +17,7 @@ function ListPage() {
         const data = await response.json();
         setAnimals(data);
       } catch (error) {
-        //eslint-disable-next-line
+        // eslint-disable-next-line
         console.error('Error fetching adoptions:', error);
       } finally {
         setLoading(false);
@@ -86,7 +86,7 @@ function ListPage() {
 
   return (
     <div className='container mx-auto p-4'>
-      <h1 className='text-2xl font-bold mb-4 text-center '>
+      <h1 className='text-2xl font-bold mb-4 text-center'>
         Listado de Animales
       </h1>
 

@@ -33,6 +33,7 @@ const formSchema = z.object({
 });
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false); // Estado para el indicador de carga
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,11 +60,11 @@ export default function Home() {
 
     const data = await response.json();
 
-    console.log(data);
     return data.url;
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true); // Activar el indicador de carga
     const { name, description, age, type, size } = values;
     const photoUrls = await Promise.all(selectedFiles.map(uploadToCloudinary));
 
@@ -86,7 +87,6 @@ export default function Home() {
       });
 
       const result = await response.json();
-      console.log(result);
 
       if (response.ok) {
         // eslint-disable-next-line
@@ -111,6 +111,8 @@ export default function Home() {
       // eslint-disable-next-line
       console.error('Error inserting adoption:', error);
       // Manejar el error de alguna manera aquí
+    } finally {
+      setIsLoading(false); // Desactivar el indicador de carga
     }
   }
 
@@ -255,9 +257,16 @@ export default function Home() {
         <Button
           className='w-fit mx-auto'
           type='submit'
+          disabled={isLoading} // Deshabilitar el botón mientras se carga
         >
-          Añadir
+          {isLoading ? 'Enviando...' : 'Añadir'}
+          {/* Cambiar el texto del botón */}
         </Button>
+        {isLoading && (
+          <div className='absolute inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50'>
+            {/* Indicador de carga */}
+          </div>
+        )}
       </form>
     </Form>
   );

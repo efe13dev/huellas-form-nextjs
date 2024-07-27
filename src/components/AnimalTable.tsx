@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { AnimalType } from '@/types';
 
@@ -13,7 +13,11 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
   onDelete,
   onUpdate
 }) => {
-  const [localAnimals, setLocalAnimals] = useState(animals);
+  const [localAnimals, setLocalAnimals] = useState<AnimalType[]>(animals);
+
+  useEffect(() => {
+    setLocalAnimals(animals);
+  }, [animals]);
 
   const handleAdoptedChange = async (id: string, adopted: boolean) => {
     try {
@@ -26,6 +30,15 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
     } catch (error) {
       // eslint-disable-next-line
       console.error('Failed to update adopted status:', error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await onDelete(id);
+    } catch (error) {
+      // eslint-disable-next-line
+      console.error('Failed to delete animal:', error);
     }
   };
 
@@ -54,10 +67,7 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
       </thead>
       <tbody>
         {localAnimals.map((animal) => {
-          // Initialize photos as an empty array
           let photos: string[] = [];
-
-          // Check if animal.photos is a string and parse it
           if (typeof animal.photos === 'string') {
             try {
               photos = JSON.parse(animal.photos);
@@ -66,8 +76,6 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
               console.error('Failed to parse photos JSON:', error);
             }
           }
-
-          // Get the first photo URL or a default image
           const photoUrl = photos.length > 0 ? photos[0] : '/default-image.jpg';
           return (
             <tr
@@ -111,7 +119,7 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
               <td className='py-2 px-2 border-b border-gray-300 text-left'>
                 <Button
                   className='bg-red-900'
-                  onClick={() => onDelete(animal.id)}
+                  onClick={() => handleDelete(animal.id)}
                 >
                   Eliminar
                 </Button>
