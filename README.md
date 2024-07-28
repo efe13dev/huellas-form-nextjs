@@ -1,8 +1,11 @@
 # ToDo:
 
-- eliminar imágenes de la carpeta public una vez que las subimos a cloudinary
-- crear función con sharp que optimice las imagenes y añada marca de agua antes de subir a cloudinary y eliminar los registros de la carpeta public una vez subidas las imagenes
-  -✅crear un loading que indique que el formulario se está enviando
+- controlar que al borrar un registro tambien se elimine la imagen de cloudinary
+- crear la marca de agua en las imágenes con el metodo composite de sharp
+- ✅constrolar que la url que se recupera de cloudinary contenga una imágen
+- ✅eliminar imágenes de la carpeta public una vez que las subimos a cloudinary
+- ✅crear función con sharp que optimice las imagenes y añada marca de agua antes de subir a cloudinary y eliminar los registros de la carpeta public una vez subidas las imagenes
+- ✅crear un loading que indique que el formulario se está enviando
 - ✅añadir imagen miniatura a la izquierda del nombre en la tabla
 - ✅Añadir funcionalidad al input de tipo check de adoptado para que actualice el valor de la base de datos.
 - ✅Añadir funcionalidad al boton de eliminar para que elimine el registro de la base de datos con una ventana de confirmación antes.

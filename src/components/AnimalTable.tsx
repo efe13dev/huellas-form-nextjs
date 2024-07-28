@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
+import checkImageUrl from '@/utils/checkImageUrl';
 import { AnimalType } from '@/types';
 
 interface AnimalTableProps {
@@ -15,9 +16,31 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
 }) => {
   const [localAnimals, setLocalAnimals] = useState<AnimalType[]>(animals);
 
+  const updateAnimalPhotos = useCallback(async (animals: AnimalType[]) => {
+    const updatedAnimals = await Promise.all(
+      animals.map(async (animal) => {
+        let photos: string[] = [];
+        if (typeof animal.photos === 'string') {
+          try {
+            photos = JSON.parse(animal.photos);
+          } catch (error) {
+            // eslint-disable-next-line
+            console.error('Failed to parse photos JSON:', error);
+          }
+        }
+        const photoUrl =
+          photos.length > 0
+            ? await checkImageUrl(photos[0])
+            : '/default-image.jpg';
+        return { ...animal, photos: [photoUrl] };
+      })
+    );
+    setLocalAnimals(updatedAnimals);
+  }, []);
+
   useEffect(() => {
-    setLocalAnimals(animals);
-  }, [animals]);
+    updateAnimalPhotos(animals);
+  }, [animals, updateAnimalPhotos]);
 
   const handleAdoptedChange = async (id: string, adopted: boolean) => {
     try {
@@ -67,23 +90,16 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
       </thead>
       <tbody>
         {localAnimals.map((animal) => {
-          let photos: string[] = [];
-          if (typeof animal.photos === 'string') {
-            try {
-              photos = JSON.parse(animal.photos);
-            } catch (error) {
-              // eslint-disable-next-line
-              console.error('Failed to parse photos JSON:', error);
-            }
-          }
-          const photoUrl = photos.length > 0 ? photos[0] : '/default-image.jpg';
+          const photoUrl =
+            animal.photos && animal.photos.length > 0
+              ? animal.photos[0]
+              : '/default-image.jpg';
           return (
             <tr
               key={animal.id}
               className='even:bg-gray-600 odd:bg-gray-400'
             >
               <td className='py-2 px-4 border-b border-gray-300'>
-                {/* eslint-disable-next-line @next/next/no-img-element*/}
                 <img
                   src={photoUrl}
                   alt={animal.name}

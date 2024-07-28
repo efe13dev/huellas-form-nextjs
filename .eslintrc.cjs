@@ -7,6 +7,7 @@ module.exports = {
     'plugin:react/jsx-runtime'
   ],
   rules: {
-    'no-console': 'warn'
+    'no-console': 'warn',
+    '@next/next/no-img-element': 'off'
   }
 };
