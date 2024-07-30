@@ -103,7 +103,7 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                 <img
                   src={photoUrl}
                   alt={animal.name}
-                  className='w-10 h-12 object-cover'
+                  className='object-cover w-32 rounded-sm'
                 />
               </td>
               <td className='py-2 px-4 border-b border-gray-300'>

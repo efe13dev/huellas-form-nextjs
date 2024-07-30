@@ -33,7 +33,7 @@ const formSchema = z.object({
 });
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false); // Estado para el indicador de carga
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,7 +52,6 @@ export default function Home() {
     const formData = new FormData();
     formData.append('file', file);
 
-    // Reemplaza '/api/cloudinary' con el endpoint real de Cloudinary si lo necesitas.
     const response = await fetch('/api/cloudinary', {
       method: 'POST',
       body: formData
@@ -105,14 +104,12 @@ export default function Home() {
       } else {
         // eslint-disable-next-line
         console.error('Error inserting adoption:', result.error);
-        // Manejar el error de alguna manera aquí
       }
     } catch (error) {
       // eslint-disable-next-line
       console.error('Error inserting adoption:', error);
-      // Manejar el error de alguna manera aquí
     } finally {
-      setIsLoading(false); // Desactivar el indicador de carga
+      setIsLoading(false);
     }
   }
 
@@ -257,7 +254,7 @@ export default function Home() {
         <Button
           className='w-fit mx-auto'
           type='submit'
-          disabled={isLoading} // Deshabilitar el botón mientras se carga
+          disabled={isLoading}
         >
           {isLoading ? 'Enviando...' : 'Añadir'}
           {/* Cambiar el texto del botón */}

@@ -35,18 +35,27 @@ export async function POST(request: NextRequest) {
 
     const metadata = await sharp(filePath).metadata();
     let width = metadata.width;
-    let height = metadata.height;
+    let height = metadata.height || 0;
 
     try {
-      if (width && width > 800) {
-        width = 800;
+      if (width && width > 900) {
+        width = 900;
         height = 600;
       }
+      const watermarkPath = path.join(
+        process.cwd(),
+        'public',
+        'marca-agua.png'
+      );
       await sharp(filePath)
-        .resize({
-          width: width,
-          height: height
-        })
+        .resize(width, height)
+        .composite([
+          {
+            input: watermarkPath,
+            top: height - 100,
+            left: 50
+          }
+        ])
         .toFormat('webp')
         .toFile(outputFilePath);
     } catch (error) {

@@ -1,9 +1,9 @@
 # ToDo:
 
-- revisar bien el componente animalTable
+- ajustar marca de agua (quiz´s un poco más grande y bajarle opacidad, incluir nombre de fido?)
 - controlar que al borrar un registro tambien se elimine la imagen de cloudinary
-- crear la marca de agua en las imágenes con el metodo composite de sharp
 - crear pantalla de login
+- ✅crear la marca de agua en las imágenes con el metodo composite de sharp
 - ✅constrolar que la url que se recupera de cloudinary contenga una imágen
 - ✅eliminar imágenes de la carpeta public una vez que las subimos a cloudinary
 - ✅crear función con sharp que optimice las imagenes y añada marca de agua antes de subir a cloudinary y eliminar los registros de la carpeta public una vez subidas las imagenes
