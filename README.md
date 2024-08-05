@@ -1,6 +1,6 @@
 # ToDo:
 
-- ajustar marca de agua (quiz´s un poco más grande y bajarle opacidad, incluir nombre de fido?)
+- ajustar marca de agua (quizas un poco más grande y bajarle opacidad, incluir nombre de fido?)
 - controlar que al borrar un registro tambien se elimine la imagen de cloudinary
 - crear pantalla de login
 - ✅crear la marca de agua en las imágenes con el metodo composite de sharp

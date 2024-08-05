@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
 
     // Subir la imagen a Cloudinary
     const response = await cloudinary.uploader.upload(outputFilePath);
+    console.log(response);
 
     // Eliminar la imagen de la carpeta public después de subirla a Cloudinary
     await unlink(filePath);
@@ -72,7 +73,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: 'Imagen subida',
-      url: response.secure_url
+      url: response.secure_url,
+      imageId: response.public_id
     });
   } catch (error) {
     // eslint-disable-next-line

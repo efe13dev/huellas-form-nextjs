@@ -8,6 +8,7 @@ export interface AnimalType {
   photos?: string[];
   type: string;
   size: string;
+  imageId?: string;
 }
 
 export type TursoData = Omit<AnimalType, 'id' | 'register_date' | 'adopted'>;

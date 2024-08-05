@@ -10,6 +10,8 @@ const client = createClient({
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  console.log(body);
+
   const { name, description, type, size, age, photos } = body as TursoData;
   //const photos = 'default-image';
 

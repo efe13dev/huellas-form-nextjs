@@ -58,14 +58,28 @@ export default function Home() {
     });
 
     const data = await response.json();
+    console.log(data);
 
-    return data.url;
+    return { url: data.url, imageId: data.imageId };
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true); // Activar el indicador de carga
+
     const { name, description, age, type, size } = values;
-    const photoUrls = await Promise.all(selectedFiles.map(uploadToCloudinary));
+
+    // Subir las imágenes y obtener tanto la URL como el `imageId`
+    const photoData = await Promise.all(
+      selectedFiles.map(async (file) => {
+        const { url, imageId } = await uploadToCloudinary(file);
+        return { url, imageId };
+      })
+    );
+
+    // Extraer URLs e IDs por separado
+    const photoUrls = photoData.map((data) => data.url);
+    const imageIds = photoData.map((data) => data.imageId);
+    console.log(imageIds[0]);
 
     const adoptionData: TursoData = {
       name,
@@ -73,7 +87,8 @@ export default function Home() {
       age,
       type,
       size,
-      photos: photoUrls.length ? photoUrls : []
+      photos: photoUrls.length ? photoUrls : [], // Guardar las URLs
+      imageId: imageIds[0] // Guardar los IDs
     };
 
     try {
@@ -88,7 +103,6 @@ export default function Home() {
       const result = await response.json();
 
       if (response.ok) {
-        // eslint-disable-next-line
         console.log('Adoption inserted successfully:', result);
         alert('Formulario enviado correctamente');
         form.reset({
@@ -102,11 +116,9 @@ export default function Home() {
         setSelectedFiles([]);
         window.location.reload();
       } else {
-        // eslint-disable-next-line
         console.error('Error inserting adoption:', result.error);
       }
     } catch (error) {
-      // eslint-disable-next-line
       console.error('Error inserting adoption:', error);
     } finally {
       setIsLoading(false);
