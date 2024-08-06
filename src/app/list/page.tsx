@@ -15,6 +15,7 @@ function ListPage() {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
+
         setAnimals(data);
       } catch (error) {
         // eslint-disable-next-line
@@ -27,11 +28,61 @@ function ListPage() {
     fetchData();
   }, []);
 
+  async function deleteToCloudinary(id: string | number) {
+    if (!id) {
+      throw new Error(`Error: identificador no valido`);
+    }
+
+    const response = await fetch('/api/cloudinary', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ public_id: id.toString() })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Error: ${errorData.error}`);
+    }
+
+    const data = await response.json();
+    return data;
+  }
+
   const handleDelete = async (id: string | number) => {
+    if (!id) {
+      throw new Error(`Error: no hay que borrar nada`);
+    }
     const isConfirmed = window.confirm('¿Estás seguro de que deseas eliminar?');
 
-    if (isConfirmed) {
+    if (isConfirmed && id) {
       try {
+        // tenemos el id de la base de datos para eliminar
+        const responseDataImages = await fetch(`/api/adoption/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await responseDataImages.json();
+        let photos: string[] = [];
+
+        if (typeof data.photos === 'string') {
+          try {
+            photos = JSON.parse(data.photos);
+          } catch (error) {
+            // eslint-disable-next-line
+            console.error('Failed to parse photos JSON:', error);
+          }
+        }
+
+        for (const photo of photos) {
+          const id = extractIdFromUrl(photo);
+          deleteToCloudinary(id);
+        }
+
         const response = await fetch(`/api/adoption/`, {
           method: 'DELETE',
           headers: {
@@ -56,8 +107,23 @@ function ListPage() {
     }
   };
 
+  function extractIdFromUrl(url: string): string {
+    if (url && url.includes('/')) {
+      const arrayUrl = url.split('/');
+      const lastPart = arrayUrl[arrayUrl.length - 1];
+      const dotIndex = lastPart.indexOf('.');
+      const id = lastPart.substring(0, dotIndex);
+      return id;
+    }
+    return '';
+  }
+
   const handleUpdate = async (id: string, adopted: boolean) => {
     try {
+      if (!id) {
+        throw new Error(`Error: no hay nada que actualizar en estado`);
+      }
+
       const response = await fetch(`/api/adoption/`, {
         method: 'PATCH',
         headers: {

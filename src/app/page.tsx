@@ -60,7 +60,7 @@ export default function Home() {
     const data = await response.json();
     console.log(data);
 
-    return { url: data.url, imageId: data.imageId };
+    return { url: data.url };
   }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -71,24 +71,18 @@ export default function Home() {
     // Subir las imágenes y obtener tanto la URL como el `imageId`
     const photoData = await Promise.all(
       selectedFiles.map(async (file) => {
-        const { url, imageId } = await uploadToCloudinary(file);
-        return { url, imageId };
+        const { url } = await uploadToCloudinary(file);
+        return { url };
       })
     );
-
-    // Extraer URLs e IDs por separado
     const photoUrls = photoData.map((data) => data.url);
-    const imageIds = photoData.map((data) => data.imageId);
-    console.log(imageIds[0]);
-
     const adoptionData: TursoData = {
       name,
       description,
       age,
       type,
       size,
-      photos: photoUrls.length ? photoUrls : [], // Guardar las URLs
-      imageId: imageIds[0] // Guardar los IDs
+      photos: photoUrls.length ? photoUrls : []
     };
 
     try {
