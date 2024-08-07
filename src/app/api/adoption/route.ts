@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   try {
     const result = await client.execute(
-      'SELECT * FROM animals ORDER BY id DESC'
+      'SELECT * FROM animals ORDER BY register_date DESC'
     );
 
     return NextResponse.json(result.rows, { status: 200 });
@@ -70,7 +70,7 @@ export async function DELETE(req: NextRequest) {
   const body = await req.json();
   const { id } = body;
 
-  if (!id || isNaN(Number(id))) {
+  if (!id) {
     return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
 
@@ -79,7 +79,7 @@ export async function DELETE(req: NextRequest) {
       [
         {
           sql: 'DELETE FROM animals WHERE id = ?',
-          args: [Number(id)]
+          args: [id]
         }
       ],
       'write'
@@ -108,7 +108,7 @@ export async function PATCH(req: NextRequest) {
         [
           {
             sql: 'UPDATE animals SET adopted = ? WHERE id = ?',
-            args: [data.adopted ? 1 : 0, Number(data.id)]
+            args: [data.adopted ? 1 : 0, data.id]
           }
         ],
         'write'

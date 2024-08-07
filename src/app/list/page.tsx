@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { AnimalType } from '@/types';
 import AnimalTable from '@/components/AnimalTable';
+import extractIdFromUrl from '@/utils/extractIdFromUrl';
 
 function ListPage() {
   const [animals, setAnimals] = useState<AnimalType[]>([]);
@@ -106,17 +107,6 @@ function ListPage() {
       }
     }
   };
-
-  function extractIdFromUrl(url: string): string {
-    if (url && url.includes('/')) {
-      const arrayUrl = url.split('/');
-      const lastPart = arrayUrl[arrayUrl.length - 1];
-      const dotIndex = lastPart.indexOf('.');
-      const id = lastPart.substring(0, dotIndex);
-      return id;
-    }
-    return '';
-  }
 
   const handleUpdate = async (id: string, adopted: boolean) => {
     try {

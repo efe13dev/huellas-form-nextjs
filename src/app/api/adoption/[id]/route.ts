@@ -13,7 +13,7 @@ export async function GET(
   try {
     const result = await client.execute({
       sql: 'SELECT * FROM animals WHERE id = ?',
-      args: [Number(id)]
+      args: [id]
     });
 
     if (result.rows.length === 0) {

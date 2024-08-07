@@ -89,14 +89,14 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
         </tr>
       </thead>
       <tbody>
-        {/*AQUI ESTA EL ERROR DEL GET /[ 404 */}
         {localAnimals.map((animal) => {
-          console.log(animal);
-
           const photoUrl =
-            animal.photos && animal.photos.length > 0
+            animal.photos &&
+            animal.photos.length > 0 &&
+            !animal.photos[0].includes('[')
               ? animal.photos[0]
-              : '/default-image.jpg';
+              : '/loading.gif';
+
           return (
             <tr
               key={animal.id}
