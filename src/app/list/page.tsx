@@ -93,7 +93,7 @@ function ListPage() {
     }
   };
 
-  const handleUpdate = async (id: string, adopted: boolean) => {
+  /* const handleUpdate = async (id: string, adopted: boolean) => {
     try {
       if (!id) {
         throw new Error(`Error: no hay nada que actualizar en estado`);
@@ -117,7 +117,7 @@ function ListPage() {
       // eslint-disable-next-line
       console.error('Error updating adopted status:', error);
     }
-  };
+  }; */
 
   if (loading) {
     return (
