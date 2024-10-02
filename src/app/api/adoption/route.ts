@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       );
       return NextResponse.json(
         { message: 'Adoption inserted successfully', result },
-        { status: 200 }
+        { status: 201 }
       );
     } catch (error) {
       // eslint-disable-next-line
@@ -103,27 +103,31 @@ export async function PATCH(req: NextRequest) {
   const data = await req.json();
 
   try {
-    if (data.id) {
-      await client.batch(
-        [
-          {
-            sql: 'UPDATE animals SET adopted = ?, genre = ? WHERE id = ?',
-            args: [data.adopted ? 1 : 0, data.genre, data.id]
-          }
-        ],
-        'write'
-      );
+    if (data.id && data.adopted !== undefined) {
+      const sql = 'UPDATE animals SET adopted = ? WHERE id = ?';
+      const args = [data.adopted ? 1 : 0, data.id];
+
+      await client.execute({
+        sql,
+        args
+      });
 
       return NextResponse.json(
-        { message: 'Animal updated successfully' },
-        { status: 201 }
+        { message: 'Animal actualizado exitosamente' },
+        { status: 200 }
       );
     } else {
-      throw new Error('Task field is required');
+      throw new Error('Se requieren los campos ID y adopted');
     }
   } catch (error) {
-    return NextResponse.json({
-      message: (error as { message: string }).message
-    });
+    // eslint-disable-next-line
+    console.error('Error al actualizar el animal:', error);
+    return NextResponse.json(
+      {
+        error: 'Error al actualizar el animal',
+        message: (error as { message: string }).message
+      },
+      { status: 500 }
+    );
   }
 }

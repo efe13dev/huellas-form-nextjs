@@ -10,13 +10,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+const MAX_WIDTH = 900;
+const MAX_HEIGHT = 600;
+const WATERMARK_OFFSET_BOTTOM = 100;
+const WATERMARK_OFFSET_LEFT = 50;
+
 export async function POST(request: NextRequest) {
   try {
     const data = await request.formData();
     const image = data.get('file');
 
-    if (!image || typeof image === 'string') {
-      return NextResponse.json('No se ha subido ninguna imagen', {
+    if (!image || !(image instanceof File)) {
+      return NextResponse.json('No valid image was uploaded', {
         status: 400
       });
     }
@@ -38,9 +43,9 @@ export async function POST(request: NextRequest) {
     let height = metadata.height || 0;
 
     try {
-      if (width && width > 900) {
-        width = 900;
-        height = 600;
+      if (width && width > MAX_WIDTH) {
+        width = MAX_WIDTH;
+        height = MAX_HEIGHT;
       }
       const watermarkPath = path.join(
         process.cwd(),
@@ -52,15 +57,15 @@ export async function POST(request: NextRequest) {
         .composite([
           {
             input: watermarkPath,
-            top: height - 100,
-            left: 50
+            top: height - WATERMARK_OFFSET_BOTTOM,
+            left: WATERMARK_OFFSET_LEFT
           }
         ])
         .toFormat('webp')
         .toFile(outputFilePath);
     } catch (error) {
       // eslint-disable-next-line
-      console.error('Error al redimensionar la imagen:', error);
+      console.error('Error resizing the image:', error);
     }
 
     // Subir la imagen a Cloudinary
@@ -76,15 +81,22 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     // eslint-disable-next-line
-    console.error('Error al procesar la imagen:', error);
-    return NextResponse.json('Error al procesar la imagen', { status: 500 });
+    console.error('Error processing the image:', error);
+    if (error instanceof Error) {
+      return NextResponse.json(`Error processing the image: ${error.message}`, {
+        status: 500
+      });
+    }
+    return NextResponse.json('Unknown error processing the image', {
+      status: 500
+    });
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
     const { public_id } = await request.json();
-    console.log(public_id);
+
     if (!public_id) {
       return NextResponse.json(
         { error: 'Public ID is required' },
@@ -102,11 +114,21 @@ export async function DELETE(request: NextRequest) {
         { status: 500 }
       );
     }
-  } catch (error: any) {
+  } catch (error) {
+    // eslint-disable-next-line
+    console.error('Error deleting the image:', error);
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: 'An error occurred while deleting the image',
+          details: error.message
+        },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(
       {
-        error: 'An error occurred while deleting the image',
-        details: error.message
+        error: 'An unknown error occurred while deleting the image'
       },
       { status: 500 }
     );

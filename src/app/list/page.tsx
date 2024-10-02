@@ -84,9 +84,9 @@ function ListPage() {
         throw new Error('No se pudo eliminar el animal de la base de datos');
       }
 
-      alert('Eliminado correctamente');
       return true; // Indicar que la eliminación fue exitosa
     } catch (error) {
+      // eslint-disable-next-line
       console.error('Error al eliminar el animal:', error);
       alert('Hubo un error al eliminar el animal');
       return false; // Indicar que la eliminación falló
@@ -134,7 +134,6 @@ function ListPage() {
       <AnimalTable
         animals={animals}
         onDelete={(id) => handleDelete(id).then(() => {})}
-        onUpdate={(id, adopted) => handleUpdate(id, adopted).then(() => {})}
       />
     </div>
   );

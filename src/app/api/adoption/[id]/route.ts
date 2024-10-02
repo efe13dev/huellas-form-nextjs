@@ -21,6 +21,7 @@ export async function GET(
     }
     return NextResponse.json(result.rows[0]);
   } catch (error) {
+    // eslint-disable-next-line
     console.error('Error fetching animal:', error);
     return NextResponse.json({ error: 'Failed to fetch animal' });
   }
