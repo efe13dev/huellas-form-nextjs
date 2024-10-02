@@ -51,60 +51,45 @@ function ListPage() {
     return data;
   }
 
-  const handleDelete = async (id: string | number) => {
+  const handleDelete = async (id: string) => {
     if (!id) {
       throw new Error(`Error: no hay que borrar nada`);
     }
-    const isConfirmed = window.confirm('¿Estás seguro de que deseas eliminar?');
 
-    if (isConfirmed && id) {
-      try {
-        // tenemos el id de la base de datos para eliminar
-        const responseDataImages = await fetch(`/api/adoption/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const data = await responseDataImages.json();
-        let photos: string[] = [];
-
-        if (typeof data.photos === 'string') {
-          try {
-            photos = JSON.parse(data.photos);
-          } catch (error) {
-            // eslint-disable-next-line
-            console.error('Failed to parse photos JSON:', error);
-          }
-        }
-
-        for (const photo of photos) {
-          const id = extractIdFromUrl(photo);
-          deleteToCloudinary(id);
-        }
-
-        const response = await fetch(`/api/adoption/`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ id: id })
-        });
-
-        if (response.ok) {
-          setAnimals((prevAnimals) =>
-            prevAnimals.filter((animal) => animal.id !== id)
-          );
-          alert('Eliminado correctamente');
-        } else {
-          // eslint-disable-next-line
-          console.error('Failed to delete animal:', response.statusText);
-        }
-      } catch (error) {
-        // eslint-disable-next-line
-        console.error('Error deleting animal:', error);
+    try {
+      // Obtener datos del animal
+      const responseDataImages = await fetch(`/api/adoption/${id}`);
+      if (!responseDataImages.ok) {
+        throw new Error('No se pudo obtener la información del animal');
       }
+      const data = await responseDataImages.json();
+
+      // Procesar fotos
+      const photos: string[] =
+        typeof data.photos === 'string' ? JSON.parse(data.photos) : [];
+
+      // Eliminar fotos de Cloudinary
+      await Promise.all(
+        photos.map((photo) => deleteToCloudinary(extractIdFromUrl(photo)))
+      );
+
+      // Eliminar animal de la base de datos
+      const response = await fetch(`/api/adoption/`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+
+      if (!response.ok) {
+        throw new Error('No se pudo eliminar el animal de la base de datos');
+      }
+
+      alert('Eliminado correctamente');
+      return true; // Indicar que la eliminación fue exitosa
+    } catch (error) {
+      console.error('Error al eliminar el animal:', error);
+      alert('Hubo un error al eliminar el animal');
+      return false; // Indicar que la eliminación falló
     }
   };
 
@@ -142,14 +127,14 @@ function ListPage() {
 
   return (
     <div className='container mx-auto p-4'>
-      <h1 className='text-2xl font-bold mb-4 text-center'>
+      <h1 className='text-2xl font-bold mb-4 text-center text-slate-600'>
         Listado de Animales
       </h1>
 
       <AnimalTable
         animals={animals}
-        onDelete={handleDelete}
-        onUpdate={handleUpdate}
+        onDelete={(id) => handleDelete(id).then(() => {})}
+        onUpdate={(id, adopted) => handleUpdate(id, adopted).then(() => {})}
       />
     </div>
   );

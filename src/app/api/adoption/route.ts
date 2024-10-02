@@ -10,12 +10,12 @@ const client = createClient({
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { name, description, type, size, age, photos } = body as TursoData;
-  //const photos = 'default-image';
+  const { name, description, type, size, age, photos, genre } =
+    body as TursoData;
 
-  if (!name || !description || !type || !size || !age) {
+  if (!name || !description || !type || !size || !age || !genre) {
     return NextResponse.json(
-      { error: 'Missing required fields' },
+      { error: 'Faltan campos requeridos' },
       { status: 400 }
     );
   }
@@ -25,8 +25,8 @@ export async function POST(req: NextRequest) {
       const result = await client.batch(
         [
           {
-            sql: 'INSERT INTO animals(name, description, type, size, age, photos) VALUES (?,?,?,?,?,?)',
-            args: [name, description, type, size, age, photosJson]
+            sql: 'INSERT INTO animals(name, description, type, size, age, photos, genre) VALUES (?,?,?,?,?,?,?)',
+            args: [name, description, type, size, age, photosJson, genre]
           }
         ],
         'write'
@@ -107,8 +107,8 @@ export async function PATCH(req: NextRequest) {
       await client.batch(
         [
           {
-            sql: 'UPDATE animals SET adopted = ? WHERE id = ?',
-            args: [data.adopted ? 1 : 0, data.id]
+            sql: 'UPDATE animals SET adopted = ?, genre = ? WHERE id = ?',
+            args: [data.adopted ? 1 : 0, data.genre, data.id]
           }
         ],
         'write'

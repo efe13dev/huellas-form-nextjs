@@ -29,7 +29,8 @@ const formSchema = z.object({
   age: z.enum(['puppy', 'young', 'adult', 'senior']),
   type: z.enum(['dog', 'cat', 'other']),
   size: z.enum(['small', 'medium', 'big']),
-  photos: z.array(z.string()).optional()
+  photos: z.array(z.string()).optional(),
+  genre: z.enum(['male', 'female', 'unknown']).default('unknown') // Añadir este campo
 });
 
 export default function Home() {
@@ -42,7 +43,8 @@ export default function Home() {
       age: undefined,
       type: undefined,
       size: undefined,
-      photos: []
+      photos: [],
+      genre: 'unknown' // Añadir valor por defecto
     }
   });
 
@@ -66,7 +68,7 @@ export default function Home() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true); // Activar el indicador de carga
 
-    const { name, description, age, type, size } = values;
+    const { name, description, age, type, size, genre } = values; // Añadir genre aquí
 
     // Subir las imágenes y obtener tanto la URL como el `imageId`
     const photoData = await Promise.all(
@@ -82,6 +84,7 @@ export default function Home() {
       age,
       type,
       size,
+      genre, // Añadir genre aquí
       photos: photoUrls.length ? photoUrls : []
     };
 
@@ -105,7 +108,8 @@ export default function Home() {
           age: undefined,
           type: undefined,
           size: undefined,
-          photos: []
+          photos: [],
+          genre: 'unknown' // Añadir valor por defecto
         });
         setSelectedFiles([]);
         window.location.reload();
@@ -128,146 +132,194 @@ export default function Home() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8 max-w-xl flex flex-col pt-14 mx-auto min-h-screen'
+        className='space-y-6 max-w-2xl mx-auto py-8 px-4 bg-white shadow-md rounded-lg'
       >
+        <h2 className='text-2xl font-bold text-center text-gray-800 mb-6'>
+          Formulario de Adopción
+        </h2>
+
         <FormField
           control={form.control}
           name='name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nombre</FormLabel>
+              <FormLabel className='text-gray-700 font-medium'>
+                Nombre
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder='Introduce un nombre ...'
                   {...field}
+                  className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500'
                 />
               </FormControl>
-
-              <FormMessage />
+              <FormMessage className='text-red-600' />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name='description'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descripción</FormLabel>
+              <FormLabel className='text-gray-700 font-medium'>
+                Descripción
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder='Cuenta su historia ...'
                   {...field}
+                  className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[150px]'
                 />
               </FormControl>
-
-              <FormMessage />
+              <FormMessage className='text-red-600' />
             </FormItem>
           )}
         />
-        <div className='flex justify-between'>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <FormField
             control={form.control}
             name='age'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Edad</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger className='w-[200px]'>
+                <FormLabel className='text-gray-700 font-medium'>
+                  Edad
+                </FormLabel>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500'>
                       <SelectValue placeholder='Selecciona una edad' />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='puppy'>Cachorro</SelectItem>
-                      <SelectItem value='young'>Adulto joven</SelectItem>
-                      <SelectItem value='adult'>Adulto</SelectItem>
-                      <SelectItem value='senior'>Anciano</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-
-                <FormMessage />
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='puppy'>Cachorro</SelectItem>
+                    <SelectItem value='young'>Adulto joven</SelectItem>
+                    <SelectItem value='adult'>Adulto</SelectItem>
+                    <SelectItem value='senior'>Anciano</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className='text-red-600' />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name='type'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger className='w-[200px]'>
+                <FormLabel className='text-gray-700 font-medium'>
+                  Tipo
+                </FormLabel>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500'>
                       <SelectValue placeholder='Elige un animal' />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='dog'>Perro</SelectItem>
-                      <SelectItem value='cat'>Gato</SelectItem>
-                      <SelectItem value='other'>Otro</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-
-                <FormMessage />
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='dog'>Perro</SelectItem>
+                    <SelectItem value='cat'>Gato</SelectItem>
+                    <SelectItem value='other'>Otro</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className='text-red-600' />
               </FormItem>
             )}
           />
         </div>
-        <div className='flex justify-between'>
-          <FormField
-            control={form.control}
-            name='photos'
-            render={() => (
-              <FormItem>
-                <FormLabel>Imágenes</FormLabel>
-                <FormControl>
-                  <Input
-                    type='file'
-                    multiple
-                    onChange={handleFileChange}
-                    id='fileInput'
-                  />
-                </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <FormField
             control={form.control}
             name='size'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tamaño</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger className='w-[200px]'>
+                <FormLabel className='text-gray-700 font-medium'>
+                  Tamaño
+                </FormLabel>
+                <Select onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500'>
                       <SelectValue placeholder='Selecciona un tamaño' />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value='small'>Pequeño</SelectItem>
-                      <SelectItem value='medium'>Mediano</SelectItem>
-                      <SelectItem value='big'>Grande</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='small'>Pequeño</SelectItem>
+                    <SelectItem value='medium'>Mediano</SelectItem>
+                    <SelectItem value='big'>Grande</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className='text-red-600' />
+              </FormItem>
+            )}
+          />
 
-                <FormMessage />
+          <FormField
+            control={form.control}
+            name='genre'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className='text-gray-700 font-medium'>
+                  Género
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500'>
+                      <SelectValue placeholder='Selecciona un género' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='unknown'>Desconocido</SelectItem>
+                    <SelectItem value='male'>Macho</SelectItem>
+                    <SelectItem value='female'>Hembra</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className='text-red-600' />
               </FormItem>
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name='photos'
+          render={() => (
+            <FormItem>
+              <FormLabel className='text-gray-700 font-medium'>
+                Imágenes
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type='file'
+                  multiple
+                  onChange={handleFileChange}
+                  id='fileInput'
+                  className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500'
+                />
+              </FormControl>
+              <FormMessage className='text-red-600' />
+            </FormItem>
+          )}
+        />
+
         <Button
-          className='w-fit mx-auto'
+          className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105'
           type='submit'
           disabled={isLoading}
         >
           {isLoading ? 'Enviando...' : 'Añadir'}
-          {/* Cambiar el texto del botón */}
         </Button>
+
         {isLoading && (
-          <div className='absolute inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50'>
-            {/* Indicador de carga */}
+          <div className='absolute inset-0 flex items-center justify-center bg-white bg-opacity-75'>
+            {/* Aquí puedes añadir un componente de spinner o loader */}
+            <div className='animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500'></div>
           </div>
         )}
       </form>
