@@ -45,7 +45,8 @@ export default function Home() {
       size: undefined,
       photos: [],
       genre: 'unknown' // Añadir valor por defecto
-    }
+    },
+    mode: 'onChange' // Añadir esta línea
   });
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -128,6 +129,8 @@ export default function Home() {
     setSelectedFiles(files);
   };
 
+  const isFormValid = form.formState.isValid; // Añadir esta línea
+
   return (
     <Form {...form}>
       <form
@@ -135,7 +138,7 @@ export default function Home() {
         className='space-y-6 max-w-2xl mx-auto py-8 px-4 bg-white shadow-md rounded-lg'
       >
         <h2 className='text-2xl font-bold text-center text-gray-800 mb-6'>
-          Formulario de Adopción
+          Registro de Animal en Adopción
         </h2>
 
         <FormField
@@ -309,9 +312,9 @@ export default function Home() {
         />
 
         <Button
-          className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105'
+          className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed'
           type='submit'
-          disabled={isLoading}
+          disabled={isLoading || !isFormValid} // Modificar esta línea
         >
           {isLoading ? 'Enviando...' : 'Añadir'}
         </Button>

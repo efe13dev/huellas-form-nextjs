@@ -1,5 +1,7 @@
 # ToDo:
 
+- revisar porque no se cambia el hacer el check de adopted
+- ¿generar una vista del detalle de cada animal?
 - crear pantalla de login
 - ajustar marca de agua (quizas un poco más grande y bajarle opacidad, incluir nombre de fido?)
 - ✅controlar que al borrar un registro tambien se elimine la imagen de cloudinary

@@ -11,7 +11,7 @@ export const Header = () => {
         <Link href={'./'}>
           <Button
             variant={'ghost'}
-            className='text-base text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+            className='text-base text-gray-800 hover:text-white hover:bg-gray-800 transition-colors duration-300'
           >
             Añadir nuevo
           </Button>
@@ -19,7 +19,7 @@ export const Header = () => {
         <Link href={'./list'}>
           <Button
             variant={'ghost'}
-            className='text-base text-gray-600 hover:text-gray-800 hover:bg-gray-200'
+            className='text-base text-gray-800 hover:text-white hover:bg-gray-800 transition-colors duration-300'
           >
             Lista de animales
           </Button>
