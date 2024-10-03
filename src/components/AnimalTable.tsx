@@ -2,17 +2,24 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import checkImageUrl from '@/utils/checkImageUrl';
 import { AnimalType } from '@/types';
+import EditAnimalModal from '@/components/EditAnimalModal'; // Nuevo import
 
 interface AnimalTableProps {
   animals: AnimalType[];
   onDelete: (id: string) => Promise<void>;
+  onUpdate: (animal: AnimalType) => Promise<void>; // Nueva prop
 }
 
-const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
+const AnimalTable: React.FC<AnimalTableProps> = ({
+  animals,
+  onDelete,
+  onUpdate
+}) => {
   const [localAnimals, setLocalAnimals] = useState<AnimalType[]>(animals);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [editingAnimal, setEditingAnimal] = useState<AnimalType | null>(null);
 
   const updateAnimalPhotos = useCallback(async (animals: AnimalType[]) => {
     const updatedAnimals = await Promise.all(
@@ -104,6 +111,32 @@ const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
     setConfirmDelete(null);
   }, []);
 
+  const handleImageClick = useCallback((animal: AnimalType) => {
+    setEditingAnimal(animal);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setEditingAnimal(null);
+  }, []);
+
+  const handleUpdateAnimal = useCallback(
+    async (updatedAnimal: AnimalType) => {
+      try {
+        await onUpdate(updatedAnimal);
+        setLocalAnimals((prevAnimals) =>
+          prevAnimals.map((animal) =>
+            animal.id === updatedAnimal.id ? updatedAnimal : animal
+          )
+        );
+        setEditingAnimal(null);
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error('Error al actualizar el animal:', error);
+      }
+    },
+    [onUpdate]
+  );
+
   return (
     <div className='relative'>
       {(isDeleting || deleteMessage || confirmDelete) && (
@@ -144,6 +177,15 @@ const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
           </div>
         </div>
       )}
+
+      {editingAnimal && (
+        <EditAnimalModal
+          animal={editingAnimal}
+          onClose={handleCloseModal}
+          onUpdate={handleUpdateAnimal}
+        />
+      )}
+
       <div
         className={`overflow-x-auto bg-gradient-to-br from-gray-100 to-gray-200 p-4 sm:p-8 rounded-xl shadow-2xl transition-all duration-300 ${isDeleting || confirmDelete ? 'filter blur-sm' : ''}`}
       >
@@ -195,7 +237,8 @@ const AnimalTable: React.FC<AnimalTableProps> = ({ animals, onDelete }) => {
                     <img
                       src={photoUrl}
                       alt={animal.name}
-                      className='object-cover w-20 h-20 sm:w-28 sm:h-28 rounded-lg shadow-md transition-transform duration-300 hover:scale-105'
+                      className='object-cover w-20 h-20 sm:w-28 sm:h-28 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer'
+                      onClick={() => handleImageClick(animal)}
                     />
                   </td>
                   <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
