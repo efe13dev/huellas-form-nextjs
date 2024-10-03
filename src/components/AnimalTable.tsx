@@ -211,6 +211,9 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                 Género
               </th>
               <th className='py-4 px-6 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider'>
+                Tamaño
+              </th>
+              <th className='py-4 px-6 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider'>
                 Adoptado
               </th>
               <th className='py-4 px-6 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider'>
@@ -278,6 +281,14 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                       {animal.genre === 'male' && 'Macho'}
                       {animal.genre === 'female' && 'Hembra'}
                       {animal.genre === 'unknown' && 'Desconocido'}
+                    </span>
+                  </td>
+                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
+                    <span className='sm:hidden font-semibold'>Tamaño:</span>
+                    <span className='text-gray-600'>
+                      {animal.size === 'small' && 'Pequeño'}
+                      {animal.size === 'medium' && 'Mediano'}
+                      {animal.size === 'big' && 'Grande'}
                     </span>
                   </td>
                   <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>

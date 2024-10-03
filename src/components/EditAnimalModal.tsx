@@ -126,6 +126,25 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
               <option value='female'>Hembra</option>
             </select>
           </div>
+          <div className='mb-4'>
+            <label
+              htmlFor='size'
+              className='block mb-2 font-semibold text-gray-700'
+            >
+              Tamaño:
+            </label>
+            <select
+              id='size'
+              name='size'
+              value={editedAnimal.size}
+              onChange={handleInputChange}
+              className='w-full p-2 border rounded'
+            >
+              <option value='small'>Pequeño</option>
+              <option value='medium'>Mediano</option>
+              <option value='big'>Grande</option>
+            </select>
+          </div>
           <div className='flex justify-end space-x-4'>
             <Button
               type='button'
