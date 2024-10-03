@@ -112,7 +112,6 @@ export async function PATCH(req: NextRequest) {
         'type',
         'size',
         'age',
-        'photos',
         'genre',
         'adopted'
       ];
@@ -120,9 +119,7 @@ export async function PATCH(req: NextRequest) {
       for (const field of allowedFields) {
         if (data[field] !== undefined) {
           updateFields.push(`${field} = ?`);
-          args.push(
-            field === 'photos' ? JSON.stringify(data[field]) : data[field]
-          );
+          args.push(data[field]);
         }
       }
 

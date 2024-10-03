@@ -1,9 +1,10 @@
 # ToDo:
 
-- revisar porque no se cambia el hacer el check de adopted
-- ¿generar una vista del detalle de cada animal?
+- problema con la eliminacion de la imagen por defecto
 - crear pantalla de login
-- ajustar marca de agua (quizas un poco más grande y bajarle opacidad, incluir nombre de fido?)
+- ✅revisar porque no se cambia el hacer el check de adopted
+- ✅añadido modal de edicion de animales
+- ✅ajustar marca de agua (quizas un poco más grande y bajarle opacidad, incluir nombre de fido?)
 - ✅controlar que al borrar un registro tambien se elimine la imagen de cloudinary
 - ✅crear la marca de agua en las imágenes con el metodo composite de sharp
 - ✅constrolar que la url que se recupera de cloudinary contenga una imágen
