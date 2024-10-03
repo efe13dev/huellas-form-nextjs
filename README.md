@@ -1,6 +1,6 @@
 # ToDo:
 
-- problema con la eliminacion de la imagen por defecto
+- modificar la fecha de la base de datos a un timestamp
 - crear pantalla de login
 - ✅revisar porque no se cambia el hacer el check de adopted
 - ✅añadido modal de edicion de animales

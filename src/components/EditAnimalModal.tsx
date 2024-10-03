@@ -37,7 +37,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
           <div className='mb-4'>
             <label
               htmlFor='name'
-              className='block mb-2'
+              className='block mb-2 font-semibold text-gray-700'
             >
               Nombre:
             </label>
@@ -53,7 +53,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
           <div className='mb-4'>
             <label
               htmlFor='description'
-              className='block mb-2'
+              className='block mb-2 font-semibold text-gray-700'
             >
               Descripción:
             </label>
@@ -65,12 +65,13 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                 handleInputChange(e)
               }
               className='w-full p-2 border rounded'
+              rows={5} // Añadimos esta línea para hacer el textarea más alto
             />
           </div>
           <div className='mb-4'>
             <label
               htmlFor='type'
-              className='block mb-2'
+              className='block mb-2 font-semibold text-gray-700'
             >
               Tipo:
             </label>
@@ -89,7 +90,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
           <div className='mb-4'>
             <label
               htmlFor='age'
-              className='block mb-2'
+              className='block mb-2 font-semibold text-gray-700'
             >
               Edad:
             </label>
@@ -109,7 +110,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
           <div className='mb-4'>
             <label
               htmlFor='genre'
-              className='block mb-2'
+              className='block mb-2 font-semibold text-gray-700'
             >
               Género:
             </label>

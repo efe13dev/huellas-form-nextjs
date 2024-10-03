@@ -269,7 +269,7 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                       Fecha de registro:
                     </span>
                     <span className='text-gray-600'>
-                      {animal.register_date}
+                      {new Date(animal.register_date).toLocaleDateString()}
                     </span>
                   </td>
                   <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
