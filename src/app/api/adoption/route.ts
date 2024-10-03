@@ -103,9 +103,35 @@ export async function PATCH(req: NextRequest) {
   const data = await req.json();
 
   try {
-    if (data.id && data.adopted !== undefined) {
-      const sql = 'UPDATE animals SET adopted = ? WHERE id = ?';
-      const args = [data.adopted ? 1 : 0, data.id];
+    if (data.id) {
+      const updateFields = [];
+      const args = [];
+      const allowedFields = [
+        'name',
+        'description',
+        'type',
+        'size',
+        'age',
+        'photos',
+        'genre',
+        'adopted'
+      ];
+
+      for (const field of allowedFields) {
+        if (data[field] !== undefined) {
+          updateFields.push(`${field} = ?`);
+          args.push(
+            field === 'photos' ? JSON.stringify(data[field]) : data[field]
+          );
+        }
+      }
+
+      if (updateFields.length === 0) {
+        throw new Error('No se proporcionaron campos para actualizar');
+      }
+
+      const sql = `UPDATE animals SET ${updateFields.join(', ')} WHERE id = ?`;
+      args.push(data.id);
 
       await client.execute({
         sql,
@@ -117,7 +143,7 @@ export async function PATCH(req: NextRequest) {
         { status: 200 }
       );
     } else {
-      throw new Error('Se requieren los campos ID y adopted');
+      throw new Error('Se requiere el campo ID');
     }
   } catch (error) {
     // eslint-disable-next-line

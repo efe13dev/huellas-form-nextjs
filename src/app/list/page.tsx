@@ -93,10 +93,13 @@ function ListPage() {
     }
   };
 
-  /* const handleUpdate = async (id: string, adopted: boolean) => {
+  const handleUpdate = async (
+    id: string,
+    updatedFields: Partial<AnimalType>
+  ) => {
     try {
       if (!id) {
-        throw new Error(`Error: no hay nada que actualizar en estado`);
+        throw new Error(`Error: no hay ID para actualizar`);
       }
 
       const response = await fetch(`/api/adoption/`, {
@@ -105,19 +108,26 @@ function ListPage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          adopted: adopted,
-          id: id
+          id: id,
+          ...updatedFields
         })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update adopted status');
+        throw new Error('Error al actualizar los datos del animal');
       }
+
+      // Actualizar el estado local
+      setAnimals(
+        animals.map((animal) =>
+          animal.id === id ? { ...animal, ...updatedFields } : animal
+        )
+      );
     } catch (error) {
-      // eslint-disable-next-line
-      console.error('Error updating adopted status:', error);
+      console.error('Error al actualizar los datos del animal:', error);
+      alert('Hubo un error al actualizar los datos del animal');
     }
-  }; */
+  };
 
   if (loading) {
     return (
@@ -134,6 +144,9 @@ function ListPage() {
       <AnimalTable
         animals={animals}
         onDelete={(id) => handleDelete(id).then(() => {})}
+        onUpdate={(animalData: AnimalType) =>
+          handleUpdate(animalData.id, animalData).then(() => {})
+        }
       />
     </div>
   );

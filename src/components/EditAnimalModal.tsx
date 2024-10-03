@@ -61,11 +61,9 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
               id='description'
               name='description'
               value={editedAnimal.description}
-              onChange={(
-                e: React.ChangeEvent<
-                  HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-                >
-              ) => handleInputChange(e)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                handleInputChange(e)
+              }
               className='w-full p-2 border rounded'
             />
           </div>
@@ -110,14 +108,14 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
           </div>
           <div className='mb-4'>
             <label
-              htmlFor='gender'
+              htmlFor='genre'
               className='block mb-2'
             >
               Género:
             </label>
             <select
-              id='gender'
-              name='gender'
+              id='genre'
+              name='genre'
               value={editedAnimal.genre}
               onChange={handleInputChange}
               className='w-full p-2 border rounded'
