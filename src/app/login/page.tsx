@@ -1,18 +1,43 @@
 'use client';
 
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importa los íconos
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Aquí deberías implementar la lógica de autenticación
-    // Por ejemplo, una llamada a una API
-    console.log('Intento de inicio de sesión con:', email, password);
-    // Si la autenticación es exitosa, redirige al usuario
-    // router.push('/dashboard');
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        name,
+        password
+      });
+
+      if (result?.error) {
+        setError('Nombre de usuario o contraseña inválidos');
+      } else {
+        router.push('/');
+        router.refresh(); // Añadido para forzar la actualización del estado de la sesión
+      }
+    } catch (error) {
+      setError(
+        'Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -20,7 +45,7 @@ export default function Login() {
       <div className='max-w-md w-full space-y-8'>
         <div>
           <h2 className='text-center text-3xl font-extrabold text-gray-900'>
-            Inicia sesión en tu cuenta
+            Inicia sesión
           </h2>
         </div>
         <form
@@ -35,24 +60,24 @@ export default function Login() {
           <div className='rounded-md shadow-sm -space-y-px'>
             <div>
               <label
-                htmlFor='email-address'
+                htmlFor='username'
                 className='sr-only'
               >
-                Correo electrónico
+                Nombre de usuario
               </label>
               <input
-                id='email-address'
-                name='email'
-                type='email'
-                autoComplete='email'
+                id='username'
+                name='username'
+                type='text'
+                autoComplete='username'
                 required
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-                placeholder='Correo electrónico'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder='Nombre de usuario'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div>
+            <div className='relative'>
               <label
                 htmlFor='password'
                 className='sr-only'
@@ -62,7 +87,7 @@ export default function Login() {
               <input
                 id='password'
                 name='password'
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 autoComplete='current-password'
                 required
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
@@ -70,6 +95,17 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <button
+                type='button'
+                className='absolute inset-y-0 right-0 pr-3 flex items-center z-20' // Añadido z-20
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className='h-5 w-5 text-gray-400' />
+                ) : (
+                  <FaEye className='h-5 w-5 text-gray-400' />
+                )}
+              </button>
             </div>
           </div>
 
@@ -77,11 +113,22 @@ export default function Login() {
             <button
               type='submit'
               className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+              disabled={isLoading}
             >
-              Iniciar sesión
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </div>
         </form>
+
+        {error && (
+          <div
+            className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative'
+            role='alert'
+          >
+            <strong className='font-bold'>Error: </strong>
+            <span className='block sm:inline'>{error}</span>
+          </div>
+        )}
       </div>
     </div>
   );
