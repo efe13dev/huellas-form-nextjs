@@ -1,36 +1,81 @@
-# ToDo:
+# Fido - Sistema de Gestión Interna para Protectora de Animales
 
-- modificar la fecha de la base de datos a un timestamp
-- crear pantalla de login
-- ✅revisar porque no se cambia el hacer el check de adopted
-- ✅añadido modal de edicion de animales
-- ✅ajustar marca de agua (quizas un poco más grande y bajarle opacidad, incluir nombre de fido?)
-- ✅controlar que al borrar un registro tambien se elimine la imagen de cloudinary
-- ✅crear la marca de agua en las imágenes con el metodo composite de sharp
-- ✅constrolar que la url que se recupera de cloudinary contenga una imágen
-- ✅eliminar imágenes de la carpeta public una vez que las subimos a cloudinary
-- ✅crear función con sharp que optimice las imagenes y añada marca de agua antes de subir a cloudinary y eliminar los registros de la carpeta public una vez subidas las imagenes
-- ✅crear un loading que indique que el formulario se está enviando
-- ✅añadir imagen miniatura a la izquierda del nombre en la tabla
-- ✅Añadir funcionalidad al input de tipo check de adoptado para que actualice el valor de la base de datos.
-- ✅Añadir funcionalidad al boton de eliminar para que elimine el registro de la base de datos con una ventana de confirmación antes.
-- ✅mirar lo del pageClient para no exponer las variables de entorno en el cliente
-- ✅revisar eslint
-- ✅crear la conexión con cloudinary para el almacenamiento de imágenes
-- ✅crear una vista sencilla de todas las entradas de la base de datos para permitir eliminar y actualizar registros
+## Descripción
 
-## Formulario para la web de fido.
+Este proyecto es una aplicación web interna para la gestión de datos de la protectora de animales Fido. Permite agregar, editar y eliminar registros de animales, con almacenamiento de imágenes optimizadas y autenticación de usuarios.
 
-- Se trata de un formulario para usa interno donde se pueden agregar nuevos animales,
-  todos los datos agregados van a una base de datos creada con **_TURSO_**
+## Características principales
 
-- Las imágenes se guardan en cloudinary
-- Esta web se usa como complemento para la gestion de la web principal
+- Formulario para agregar nuevos animales
+- Base de datos gestionada con **TURSO**
+- Desarrollado con Next.js, TypeScript, TailwindCSS y componentes shadcn
+- Procesamiento de imágenes con Sharp (optimización y marca de agua)
+- Almacenamiento de imágenes en Cloudinary
+- Autenticación de usuarios con AuthJS
+- Interfaz para editar y eliminar registros existentes
 
-### Instrucciones
+## Tecnologías utilizadas
 
-Para usar la aplicación:
+- Next.js
+- TypeScript
+- TailwindCSS
+- Sharp
+- Cloudinary
+- AuthJS
+- TURSO (base de datos)
 
-- Clonar el repositorio en tu local
-- Ejecutar `npm run dev`
-- Abrir en el navegador localhost:3000
+## Instalación y uso
+
+1. Clonar el repositorio:
+   ```
+   git clone [URL_DEL_REPOSITORIO]
+   ```
+2. Instalar dependencias:
+   ```
+   npm install
+   ```
+3. Ejecutar en modo desarrollo:
+   ```
+   npm run dev
+   ```
+4. Abrir en el navegador:
+   ```
+   http://localhost:3000
+   ```
+
+**Nota**: Se requiere autenticación para acceder a la aplicación.
+
+## Tareas completadas
+
+- [x] Modificar la fecha de la base de datos a un timestamp
+- [x] Crear pantalla de login
+- [x] Añadir autenticación con AuthJS
+- [x] Corregir funcionalidad de check de adopción
+- [x] Añadir modal de edición de animales
+- [x] Ajustar marca de agua en imágenes
+- [x] Eliminar imágenes de Cloudinary al borrar registros
+- [x] Implementar procesamiento de imágenes con Sharp
+- [x] Crear loading para envío de formularios
+- [x] Añadir miniaturas en la tabla de registros
+- [x] Implementar actualización de estado de adopción
+- [x] Añadir confirmación para eliminación de registros
+- [x] Configurar variables de entorno seguras
+- [x] Revisar y configurar ESLint
+- [x] Implementar conexión con Cloudinary
+- [x] Crear vista para gestión de registros (CRUD)
+
+## Contribución
+
+Para contribuir al proyecto, por favor sigue estos pasos:
+
+1. Haz un fork del repositorio
+2. Crea una nueva rama (`git checkout -b feature/AmazingFeature`)
+3. Realiza tus cambios y haz commit (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## Contacto
+
+Para cualquier consulta o información adicional, puedes contactarme en:
+
+- Email: efe13dev@gmail.com
