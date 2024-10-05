@@ -187,10 +187,10 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
       )}
 
       <div
-        className={`overflow-x-auto bg-gradient-to-br from-gray-100 to-gray-200 p-4 sm:p-8 rounded-xl shadow-2xl transition-all duration-300 ${isDeleting || confirmDelete ? 'filter blur-sm' : ''}`}
+        className={`overflow-x-auto bg-gradient-to-br from-gray-100 to-gray-200 p-4 lg:p-8 rounded-xl shadow-2xl transition-all duration-300 ${isDeleting || confirmDelete ? 'filter blur-sm' : ''}`}
       >
         <table className='min-w-full border-collapse shadow-lg rounded-lg overflow-hidden'>
-          <thead className='hidden sm:table-header-group'>
+          <thead className='hidden lg:table-header-group'>
             <tr className='bg-gradient-to-r from-blue-300 to-purple-300'>
               <th className='py-4 px-6 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider'>
                 Imagen
@@ -233,25 +233,25 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
               return (
                 <tr
                   key={animal.id}
-                  className='flex flex-col sm:table-row mb-4 sm:mb-0 hover:bg-gray-100 transition-colors duration-300 ease-in-out'
+                  className='flex flex-col lg:table-row mb-4 lg:mb-0 hover:bg-gray-100 transition-colors duration-300 ease-in-out bg-white rounded-lg shadow-md lg:shadow-none lg:rounded-none'
                 >
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>Imagen:</span>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>Imagen:</span>
                     <img
                       src={photoUrl}
                       alt={animal.name}
-                      className='object-cover w-20 h-20 sm:w-28 sm:h-28 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer'
+                      className='object-cover w-20 h-20 lg:w-28 lg:h-28 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer'
                       onClick={() => handleImageClick(animal)}
                     />
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>Nombre:</span>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>Nombre:</span>
                     <span className='font-medium text-gray-700'>
                       {animal.name}
                     </span>
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>Edad:</span>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>Edad:</span>
                     <span className='text-gray-600'>
                       {animal.age === 'puppy' && 'Cachorro'}
                       {animal.age === 'young' && 'Joven'}
@@ -259,40 +259,40 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                       {animal.age === 'senior' && 'Anciano'}
                     </span>
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>Tipo:</span>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>Tipo:</span>
                     <span className='text-gray-600'>
                       {animal.type === 'dog' && 'Perro'}
                       {animal.type === 'cat' && 'Gato'}
                       {animal.type === 'other' && 'Otro'}
                     </span>
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>
                       Fecha de registro:
                     </span>
                     <span className='text-gray-600'>
                       {new Date(animal.register_date).toLocaleDateString()}
                     </span>
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>Género:</span>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>Género:</span>
                     <span className='text-gray-600'>
                       {animal.genre === 'male' && 'Macho'}
                       {animal.genre === 'female' && 'Hembra'}
                       {animal.genre === 'unknown' && 'Desconocido'}
                     </span>
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>Tamaño:</span>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>Tamaño:</span>
                     <span className='text-gray-600'>
                       {animal.size === 'small' && 'Pequeño'}
                       {animal.size === 'medium' && 'Mediano'}
                       {animal.size === 'big' && 'Grande'}
                     </span>
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300 flex items-center justify-between sm:table-cell'>
-                    <span className='sm:hidden font-semibold'>Adoptado:</span>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                    <span className='lg:hidden font-semibold'>Adoptado:</span>
                     <div className='flex items-center space-x-2'>
                       <input
                         type='checkbox'
@@ -302,14 +302,14 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                         }
                         className='form-checkbox h-6 w-6 text-indigo-500 bg-gray-700 border-gray-300 rounded-md transition duration-200 ease-in-out focus:ring-2 focus:ring-indigo-500'
                       />
-                      <span className='sm:hidden text-gray-600'>
+                      <span className='lg:hidden text-gray-600'>
                         {animal.adopted ? 'Sí' : 'No'}
                       </span>
                     </div>
                   </td>
-                  <td className='py-3 sm:py-5 px-4 sm:px-6 border-b border-gray-300'>
+                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300'>
                     <Button
-                      className='bg-gradient-to-r from-red-400 to-pink-400 hover:from-red-500 hover:to-pink-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto'
+                      className='bg-gradient-to-r from-red-400 to-pink-400 hover:from-red-500 hover:to-pink-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full lg:w-auto'
                       onClick={() => handleDeleteClick(animal.id)}
                       disabled={isDeleting || confirmDelete !== null}
                     >

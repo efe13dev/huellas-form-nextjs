@@ -139,7 +139,7 @@ export default function Home() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-6 max-w-2xl mx-auto py-8 px-4 bg-white shadow-md rounded-lg'
+          className='space-y-6 max-w-2xl mx-auto py-8 px-4 bg-white shadow-md rounded-lg mt-4'
         >
           <h2 className='text-2xl font-bold text-center text-gray-800 mb-6'>
             Registro de Animal en Adopción

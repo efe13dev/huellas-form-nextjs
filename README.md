@@ -45,8 +45,10 @@ Este proyecto es una aplicación web interna para la gestión de datos de la pro
 
 **Nota**: Se requiere autenticación para acceder a la aplicación.
 
-## Tareas completadas
+## Tareas
 
+- [x] Hacer mas ancho el formulario de edición
+- [x] Hacer el breakpoint para el responsive antes
 - [x] Modificar la fecha de la base de datos a un timestamp
 - [x] Crear pantalla de login
 - [x] Añadir autenticación con AuthJS
