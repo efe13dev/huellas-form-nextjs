@@ -8,13 +8,21 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET
   });
 
+  // Usar console.log solo en desarrollo
+  if (process.env.NODE_ENV === 'development') {
+    console.log('URL:', request.nextUrl.pathname);
+    console.log('Session:', session);
+  }
+
   if (
     !session &&
     (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/list')
   ) {
+    // Redirigir a /login si no hay sesión
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
+  // Permitir el acceso si hay sesión o si la ruta no requiere autenticación
   return NextResponse.next();
 }
 
