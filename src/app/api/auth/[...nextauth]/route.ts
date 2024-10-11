@@ -55,18 +55,19 @@ const handler = NextAuth({
       return session;
     }
   },
-  // Añade más opciones de configuración aquí
+  // Modificaciones sugeridas
   secret: process.env.NEXTAUTH_SECRET,
-  // Agrega esta línea para asegurar el uso de HTTPS en producción
   useSecureCookies: process.env.NODE_ENV === 'production',
-  // Configura el tiempo de expiración de la sesión (por ejemplo, 30 días)
   session: {
+    strategy: 'jwt', // Añadir esta línea
     maxAge: 30 * 24 * 60 * 60 // 30 días
   },
-  // Configura las cookies para mayor seguridad
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name:
+        process.env.NODE_ENV === 'production'
+          ? `__Secure-next-auth.session-token`
+          : `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: 'lax',
@@ -74,7 +75,8 @@ const handler = NextAuth({
         secure: process.env.NODE_ENV === 'production'
       }
     }
-  }
+  },
+  debug: process.env.NODE_ENV === 'development' // Añadir esta línea
 });
 
 export { handler as GET, handler as POST };

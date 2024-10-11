@@ -12,6 +12,13 @@ export async function middleware(request: NextRequest) {
   if (process.env.NODE_ENV === 'development') {
     console.log('URL:', request.nextUrl.pathname);
     console.log('Session:', session);
+    console.log('NEXTAUTH_SECRET:', process.env.NEXTAUTH_SECRET); // Añadir esta línea
+  }
+
+  // Comprobar si estamos en desarrollo y no hay sesión
+  if (process.env.NODE_ENV === 'development' && !session) {
+    console.warn('No se encontró sesión en desarrollo. Permitiendo acceso...');
+    return NextResponse.next();
   }
 
   if (
