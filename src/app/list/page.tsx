@@ -1,133 +1,79 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { AnimalType } from '@/types';
 import AnimalTable from '@/components/AnimalTable';
 import extractIdFromUrl from '@/utils/extractIdFromUrl';
+import {
+  fetchAnimals,
+  deleteAnimal,
+  updateAnimal
+} from '../services/animalService';
+import { deleteImageFromCloudinary } from '../services/cloudinaryService';
 
 function ListPage() {
   const [animals, setAnimals] = useState<AnimalType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch('/api/adoption');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-
-        setAnimals(data);
-      } catch (error) {
+    fetchAnimals()
+      .then((result) =>
+        Array.isArray(result) ? setAnimals(result) : setAnimals([result])
+      )
+      .catch(
         // eslint-disable-next-line
-        console.error('Error fetching adoptions:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
+        console.error
+      )
+      .finally(() => setLoading(false));
   }, []);
 
-  async function deleteToCloudinary(id: string | number) {
+  const handleDelete = useCallback(async (id: string) => {
     if (!id) {
-      throw new Error(`Error: identificador no valido`);
-    }
-
-    const response = await fetch('/api/cloudinary', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ public_id: id.toString() })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Error: ${errorData.error}`);
-    }
-
-    const data = await response.json();
-    return data;
-  }
-
-  const handleDelete = async (id: string) => {
-    if (!id) {
-      throw new Error(`Error: no hay que borrar nada`);
+      throw new Error('Error: no hay que borrar nada');
     }
 
     try {
-      // Obtener datos del animal
-      const responseDataImages = await fetch(`/api/adoption/${id}`);
-      if (!responseDataImages.ok) {
-        throw new Error('No se pudo obtener la información del animal');
-      }
-      const data = await responseDataImages.json();
-
-      // Procesar fotos
-      const photos: string[] =
-        typeof data.photos === 'string' ? JSON.parse(data.photos) : [];
-
-      // Eliminar fotos de Cloudinary
-      await Promise.all(
-        photos.map((photo) => deleteToCloudinary(extractIdFromUrl(photo)))
+      const animalData = await fetchAnimals(id);
+      const animal = Array.isArray(animalData) ? animalData[0] : animalData;
+      const photos: string[] = JSON.parse(
+        typeof animal.photos === 'string' ? animal.photos : '[]'
       );
 
-      // Eliminar animal de la base de datos
-      const response = await fetch(`/api/adoption/`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
+      await Promise.all(
+        photos.map((photo) =>
+          deleteImageFromCloudinary(extractIdFromUrl(photo))
+        )
+      );
 
-      if (!response.ok) {
-        throw new Error('No se pudo eliminar el animal de la base de datos');
-      }
-
-      return true; // Indicar que la eliminación fue exitosa
+      await deleteAnimal(id);
+      setAnimals((prevAnimals) =>
+        prevAnimals.filter((animal) => animal.id !== id)
+      );
+      return true;
     } catch (error) {
       // eslint-disable-next-line
       console.error('Error al eliminar el animal:', error);
       alert('Hubo un error al eliminar el animal');
-      return false; // Indicar que la eliminación falló
+      return false;
     }
-  };
+  }, []);
 
-  const handleUpdate = async (
-    id: string,
-    updatedFields: Partial<AnimalType>
-  ) => {
-    try {
-      if (!id) {
-        throw new Error(`Error: no hay ID para actualizar`);
+  const handleUpdate = useCallback(
+    async (id: string, updatedFields: Partial<AnimalType>) => {
+      try {
+        await updateAnimal(id, updatedFields);
+        setAnimals((prevAnimals) =>
+          prevAnimals.map((animal) =>
+            animal.id === id ? { ...animal, ...updatedFields } : animal
+          )
+        );
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error('Error al actualizar los datos del animal:', error);
+        alert('Hubo un error al actualizar los datos del animal');
       }
-
-      const response = await fetch(`/api/adoption/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: id,
-          ...updatedFields
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar los datos del animal');
-      }
-
-      // Actualizar el estado local
-      setAnimals(
-        animals.map((animal) =>
-          animal.id === id ? { ...animal, ...updatedFields } : animal
-        )
-      );
-    } catch (error) {
-      console.error('Error al actualizar los datos del animal:', error);
-      alert('Hubo un error al actualizar los datos del animal');
-    }
-  };
+    },
+    []
+  );
 
   if (loading) {
     return (
@@ -140,12 +86,13 @@ function ListPage() {
       <h1 className='text-2xl font-bold mb-4 text-center text-slate-600'>
         Listado de Animales
       </h1>
-
       <AnimalTable
         animals={animals}
-        onDelete={(id) => handleDelete(id).then(() => {})}
+        onDelete={async (id: string) => {
+          await handleDelete(id);
+        }}
         onUpdate={(animalData: AnimalType) =>
-          handleUpdate(animalData.id, animalData).then(() => {})
+          handleUpdate(animalData.id, animalData)
         }
       />
     </div>
