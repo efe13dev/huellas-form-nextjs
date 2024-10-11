@@ -6,6 +6,11 @@ const client = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN
 });
 
+// Agregar esta verificación después de crear el cliente
+if (!process.env.TURSO_DATABASE_URL) {
+  throw new Error('TURSO_DATABASE_URL no está configurada');
+}
+
 export async function GET(
   req: NextRequest,
   { params: { id } }: { params: { id: string } }
