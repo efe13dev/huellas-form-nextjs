@@ -3,6 +3,7 @@ import { writeFile, unlink } from 'fs/promises';
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import sharp from 'sharp';
+import { UploadApiResponse } from 'cloudinary';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -29,51 +30,38 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await image.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const filePath = path.join(process.cwd(), 'public', image.name);
-    const outputFilePath = path.join(
-      process.cwd(),
-      'public',
-      'resized-' + image.name
-    );
+    // Procesar la imagen en memoria
+    let processedBuffer = await sharp(buffer)
+      .resize(MAX_WIDTH, MAX_HEIGHT, {
+        fit: 'inside',
+        withoutEnlargement: true
+      })
+      .webp()
+      .toBuffer();
 
-    await writeFile(filePath, buffer);
+    // Añadir marca de agua
+    const watermarkPath = path.join(process.cwd(), 'public', 'marca-agua.png');
+    processedBuffer = await sharp(processedBuffer)
+      .composite([
+        {
+          input: watermarkPath,
+          gravity: 'southeast',
+          top: WATERMARK_OFFSET_BOTTOM,
+          left: WATERMARK_OFFSET_LEFT
+        }
+      ])
+      .toBuffer();
 
-    const metadata = await sharp(filePath).metadata();
-    let width = metadata.width;
-    let height = metadata.height || 0;
-
-    try {
-      if (width && width > MAX_WIDTH) {
-        width = MAX_WIDTH;
-        height = MAX_HEIGHT;
-      }
-      const watermarkPath = path.join(
-        process.cwd(),
-        'public',
-        'marca-agua.png'
-      );
-      await sharp(filePath)
-        .resize(width, height)
-        .composite([
-          {
-            input: watermarkPath,
-            top: height - WATERMARK_OFFSET_BOTTOM,
-            left: WATERMARK_OFFSET_LEFT
-          }
-        ])
-        .toFormat('webp')
-        .toFile(outputFilePath);
-    } catch (error) {
-      // eslint-disable-next-line
-      console.error('Error resizing the image:', error);
-    }
-
-    // Subir la imagen a Cloudinary
-    const response = await cloudinary.uploader.upload(outputFilePath);
-
-    // Eliminar la imagen de la carpeta public después de subirla a Cloudinary
-    await unlink(filePath);
-    await unlink(outputFilePath);
+    // Subir la imagen procesada a Cloudinary
+    const response = (await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ resource_type: 'auto' }, (error, result) => {
+          if (error) reject(error);
+          else if (result) resolve(result);
+          else reject(new Error('Resultado de carga indefinido'));
+        })
+        .end(processedBuffer);
+    })) as UploadApiResponse;
 
     return NextResponse.json({
       message: 'Imagen subida',
