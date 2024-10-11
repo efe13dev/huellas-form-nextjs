@@ -101,7 +101,7 @@ export default function Home() {
       const result = await response.json();
 
       if (response.ok) {
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-console
         console.log('Adoption inserted successfully:', result);
 
         form.reset({
@@ -116,11 +116,11 @@ export default function Home() {
         setSelectedFiles([]);
         setShowConfirmation(true); // Mostrar la ventana de confirmación
       } else {
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-console
         console.error('Error inserting adoption:', result.error);
       }
     } catch (error) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-console
       console.error('Error inserting adoption:', error);
     } finally {
       setIsLoading(false);
