@@ -51,6 +51,7 @@ export default function Home() {
   });
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [fileError, setFileError] = useState<string | null>(null); // Añadir este estado
 
   async function uploadToCloudinary(file: File) {
     const formData = new FormData();
@@ -71,14 +72,19 @@ export default function Home() {
 
     const { name, description, age, type, size, genre } = values; // Añadir genre aquí
 
-    // Subir las imágenes y obtener tanto la URL como el `imageId`
-    const photoData = await Promise.all(
-      selectedFiles.map(async (file) => {
-        const { url } = await uploadToCloudinary(file);
-        return { url };
-      })
-    );
-    const photoUrls = photoData.map((data) => data.url);
+    let photoUrls: string[] = [];
+
+    if (selectedFiles.length > 0) {
+      // Subir las imágenes y obtener las URLs
+      const photoData = await Promise.all(
+        selectedFiles.map(async (file) => {
+          const { url } = await uploadToCloudinary(file);
+          return { url };
+        })
+      );
+      photoUrls = photoData.map((data) => data.url);
+    }
+
     const adoptionData: TursoData = {
       name,
       description,
@@ -86,7 +92,7 @@ export default function Home() {
       type,
       size,
       genre, // Añadir genre aquí
-      photos: photoUrls.length ? photoUrls : []
+      photos: photoUrls
     };
 
     try {
@@ -129,10 +135,19 @@ export default function Home() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setSelectedFiles(files);
+    if (files.length > 5) {
+      setFileError('Solo se pueden subir un máximo de 5 imágenes.');
+      setSelectedFiles([]);
+    } else {
+      setSelectedFiles(files);
+      setFileError(null);
+    }
   };
 
-  const isFormValid = form.formState.isValid; // Añadir esta línea
+  const isFormValid =
+    form.formState.isValid &&
+    (selectedFiles.length === 0 ||
+      (selectedFiles.length > 0 && selectedFiles.length <= 5));
 
   return (
     <>
@@ -299,7 +314,7 @@ export default function Home() {
             render={() => (
               <FormItem>
                 <FormLabel className='text-gray-700 font-medium'>
-                  Imágenes
+                  Imágenes (máximo 5)
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -307,10 +322,18 @@ export default function Home() {
                     multiple
                     onChange={handleFileChange}
                     id='fileInput'
+                    accept='image/*'
                     className='bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500'
                   />
                 </FormControl>
-                <FormMessage className='text-red-600' />
+                {fileError && (
+                  <p className='text-red-600 text-sm mt-1'>{fileError}</p>
+                )}
+                {selectedFiles.length > 0 && (
+                  <p className='text-sm text-gray-600 mt-2'>
+                    {selectedFiles.length} imagen(es) seleccionada(s)
+                  </p>
+                )}
               </FormItem>
             )}
           />
@@ -318,14 +341,13 @@ export default function Home() {
           <Button
             className='w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed'
             type='submit'
-            disabled={isLoading || !isFormValid} // Modificar esta línea
+            disabled={isLoading || !isFormValid}
           >
             {isLoading ? 'Enviando...' : 'Añadir'}
           </Button>
 
           {isLoading && (
             <div className='absolute inset-0 flex items-center justify-center bg-white bg-opacity-75'>
-              {/* Aquí puedes añadir un componente de spinner o loader */}
               <div className='animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500'></div>
             </div>
           )}
