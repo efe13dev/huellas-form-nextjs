@@ -47,7 +47,7 @@ Este proyecto es una aplicación web interna para la gestión de datos de la pro
 
 ## Tareas
 
-- [ ] Restringir el select files a imágenes
+- [x] Restringir el select files a imágenes y limitar la cantidad a 5
 - [x] Hacer mas ancho el formulario de edición
 - [x] Hacer el breakpoint para el responsive antes
 - [x] Modificar la fecha de la base de datos a un timestamp
