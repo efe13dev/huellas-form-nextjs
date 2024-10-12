@@ -51,7 +51,7 @@ export default function Home() {
   });
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [fileError, setFileError] = useState<string | null>(null); // Añadir este estado
+  const [fileError, setFileError] = useState<string | null>(null);
 
   async function uploadToCloudinary(file: File) {
     const formData = new FormData();
@@ -145,9 +145,7 @@ export default function Home() {
   };
 
   const isFormValid =
-    form.formState.isValid &&
-    (selectedFiles.length === 0 ||
-      (selectedFiles.length > 0 && selectedFiles.length <= 5));
+    form.formState.isValid && selectedFiles.length <= 5 && !fileError;
 
   return (
     <>
