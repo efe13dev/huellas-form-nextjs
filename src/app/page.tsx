@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -23,6 +23,8 @@ import {
   SelectValue
 } from '@/components/ui/select';
 
+const MAX_FILES = 5;
+
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   description: z.string().min(2).max(500),
@@ -30,13 +32,18 @@ const formSchema = z.object({
   type: z.enum(['dog', 'cat', 'other']),
   size: z.enum(['small', 'medium', 'big']),
   photos: z.array(z.string()).optional(),
-  genre: z.enum(['male', 'female', 'unknown']).default('unknown') // Añadir este campo
+  genre: z.enum(['male', 'female', 'unknown']).default('unknown')
 });
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false); // Añadir este estado
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [fileError, setFileError] = useState<string | null>(null);
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
@@ -45,15 +52,12 @@ export default function Home() {
       type: undefined,
       size: undefined,
       photos: [],
-      genre: 'unknown' // Añadir valor por defecto
+      genre: 'unknown'
     },
-    mode: 'onChange' // Añadir esta línea
+    mode: 'onChange'
   });
 
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [fileError, setFileError] = useState<string | null>(null);
-
-  async function uploadToCloudinary(file: File) {
+  const uploadToCloudinary = useCallback(async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -63,89 +67,76 @@ export default function Home() {
     });
 
     const data = await response.json();
-
     return { url: data.url };
-  }
+  }, []);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true); // Activar el indicador de carga
+  const onSubmit = useCallback(
+    async (values: FormValues) => {
+      setIsLoading(true);
 
-    const { name, description, age, type, size, genre } = values; // Añadir genre aquí
+      try {
+        const { name, description, age, type, size, genre } = values;
 
-    let photoUrls: string[] = [];
+        const photoUrls = await Promise.all(
+          selectedFiles.map((file) => uploadToCloudinary(file))
+        );
 
-    if (selectedFiles.length > 0) {
-      // Subir las imágenes y obtener las URLs
-      const photoData = await Promise.all(
-        selectedFiles.map(async (file) => {
-          const { url } = await uploadToCloudinary(file);
-          return { url };
-        })
-      );
-      photoUrls = photoData.map((data) => data.url);
-    }
+        const adoptionData: TursoData = {
+          name,
+          description,
+          age,
+          type,
+          size,
+          genre,
+          photos: photoUrls.map((data) => data.url)
+        };
 
-    const adoptionData: TursoData = {
-      name,
-      description,
-      age,
-      type,
-      size,
-      genre, // Añadir genre aquí
-      photos: photoUrls
-    };
-
-    try {
-      const response = await fetch('/api/adoption', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(adoptionData)
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        // eslint-disable-next-line no-console
-        console.log('Adoption inserted successfully:', result);
-
-        form.reset({
-          name: '',
-          description: '',
-          age: undefined,
-          type: undefined,
-          size: undefined,
-          photos: [],
-          genre: 'unknown' // Añadir valor por defecto
+        const response = await fetch('/api/adoption', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(adoptionData)
         });
-        setSelectedFiles([]);
-        setShowConfirmation(true); // Mostrar la ventana de confirmación
-      } else {
-        // eslint-disable-next-line no-console
-        console.error('Error inserting adoption:', result.error);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error inserting adoption:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length > 5) {
-      setFileError('Solo se pueden subir un máximo de 5 imágenes.');
-      setSelectedFiles([]);
-    } else {
-      setSelectedFiles(files);
-      setFileError(null);
-    }
-  };
+        const result = await response.json();
+
+        if (response.ok) {
+          // eslint-disable-next-line no-console
+          console.log('Adoption inserted successfully:', result);
+          form.reset();
+          setSelectedFiles([]);
+          setShowConfirmation(true);
+        } else {
+          // eslint-disable-next-line no-console
+          console.error('Error inserting adoption:', result.error);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error inserting adoption:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [form, selectedFiles, uploadToCloudinary]
+  );
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length > MAX_FILES) {
+        setFileError(
+          `Solo se pueden subir un máximo de ${MAX_FILES} imágenes.`
+        );
+        setSelectedFiles([]);
+      } else {
+        setSelectedFiles(files);
+        setFileError(null);
+      }
+    },
+    []
+  );
 
   const isFormValid =
-    form.formState.isValid && selectedFiles.length <= 5 && !fileError;
+    form.formState.isValid && selectedFiles.length <= MAX_FILES && !fileError;
 
   return (
     <>
