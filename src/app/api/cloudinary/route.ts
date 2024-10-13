@@ -12,8 +12,9 @@ cloudinary.config({
 
 const MAX_WIDTH = 900;
 const MAX_HEIGHT = 675;
-const WATERMARK_OFFSET_BOTTOM = 100;
-const WATERMARK_OFFSET_LEFT = 50;
+const WATERMARK_WIDTH = 60; // Añade esta línea para definir el ancho de la marca de agua
+const WATERMARK_OFFSET_BOTTOM = 40; // Reduce este valor
+const WATERMARK_OFFSET_RIGHT = 40; // Cambia WATERMARK_OFFSET_LEFT por WATERMARK_OFFSET_RIGHT
 const WATERMARK_PATH = path.join(process.cwd(), 'public', 'marca-agua.png');
 const WATERMARK_OPACITY = 0.3; // Añade esta línea para controlar la opacidad
 
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest) {
       .composite([
         {
           input: await sharp(WATERMARK_PATH)
+            .resize(WATERMARK_WIDTH) // Redimensiona la marca de agua
             .composite([
               {
                 input: Buffer.from([
@@ -55,7 +57,7 @@ export async function POST(request: NextRequest) {
             .toBuffer(),
           gravity: 'southeast',
           top: WATERMARK_OFFSET_BOTTOM,
-          left: WATERMARK_OFFSET_LEFT
+          left: WATERMARK_OFFSET_RIGHT
         }
       ])
       .webp()
