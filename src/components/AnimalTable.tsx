@@ -27,14 +27,16 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
         if (typeof animal.photos === 'string') {
           try {
             const photos = JSON.parse(animal.photos);
-            const photoUrl =
-              photos.length > 0
-                ? await checkImageUrl(photos[0])
-                : '/default-image.jpg';
-            return { ...animal, photos: [photoUrl] };
+            const photoUrls = await Promise.all(
+              photos.map(async (photo: string) => await checkImageUrl(photo))
+            );
+            return {
+              ...animal,
+              photos: photoUrls.length > 0 ? photoUrls : ['/default-image.jpg']
+            };
           } catch (error) {
             // eslint-disable-next-line
-            console.error('Failed to parse photos JSON:', error);
+            console.error('Error al analizar el JSON de fotos:', error);
             return { ...animal, photos: ['/default-image.jpg'] };
           }
         }
@@ -223,12 +225,10 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
           </thead>
           <tbody>
             {localAnimals.map((animal) => {
-              const photoUrl =
-                animal.photos &&
-                animal.photos.length > 0 &&
-                !animal.photos[0].includes('[')
-                  ? animal.photos[0]
-                  : '/loading.gif';
+              const photoUrls =
+                Array.isArray(animal.photos) && animal.photos.length > 0
+                  ? animal.photos
+                  : ['/default-image.jpg'];
 
               return (
                 <tr
@@ -236,14 +236,16 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                   className='flex flex-col lg:table-row mb-4 lg:mb-0 hover:bg-gray-100 transition-colors duration-300 ease-in-out bg-white rounded-lg shadow-md lg:shadow-none lg:rounded-none'
                 >
                   <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Imagen:</span>
-                    <div className='w-20 h-20 lg:w-32 lg:h-32 relative overflow-hidden rounded-lg shadow-md bg-gray-100 flex items-center justify-center'>
-                      <img
-                        src={photoUrl}
-                        alt={animal.name}
-                        className='max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105 cursor-pointer'
-                        onClick={() => handleImageClick(animal)}
-                      />
+                    <span className='lg:hidden font-semibold'>Imágenes:</span>
+                    <div className='flex flex-wrap gap-2'>
+                      <div className='w-20 h-20 lg:w-32 lg:h-32 relative overflow-hidden rounded-lg shadow-md bg-gray-100 flex items-center justify-center'>
+                        <img
+                          src={photoUrls[0] || '/default-image.jpg'}
+                          alt={`${animal.name}`}
+                          className='max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105 cursor-pointer'
+                          onClick={() => handleImageClick(animal)}
+                        />
+                      </div>
                     </div>
                   </td>
                   <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
