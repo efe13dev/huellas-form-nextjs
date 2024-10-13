@@ -237,12 +237,14 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
                 >
                   <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
                     <span className='lg:hidden font-semibold'>Imagen:</span>
-                    <img
-                      src={photoUrl}
-                      alt={animal.name}
-                      className='object-cover w-20 h-20 lg:w-28 lg:h-28 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer'
-                      onClick={() => handleImageClick(animal)}
-                    />
+                    <div className='w-20 h-20 lg:w-32 lg:h-32 relative overflow-hidden rounded-lg shadow-md bg-gray-100 flex items-center justify-center'>
+                      <img
+                        src={photoUrl}
+                        alt={animal.name}
+                        className='max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105 cursor-pointer'
+                        onClick={() => handleImageClick(animal)}
+                      />
+                    </div>
                   </td>
                   <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
                     <span className='lg:hidden font-semibold'>Nombre:</span>
