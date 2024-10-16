@@ -22,6 +22,9 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
     >
   ) => {
     const { name, value } = e.target;
+    if (name === 'description' && value.length > 500) {
+      return; // No actualizar si excede 500 caracteres
+    }
     setEditedAnimal((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -44,7 +47,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
-      <div className='bg-white p-4 sm:p-8 rounded-lg max-w-7xl w-full max-h-[90vh] overflow-y-auto relative'>
+      <div className='bg-white p-4 sm:p-8 rounded-lg max-w-7xl w-full max-h-[98vh] overflow-y-auto relative'>
         <button
           onClick={onClose}
           className='absolute top-2 right-2 text-gray-500 hover:text-gray-700'
@@ -99,7 +102,10 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
           </div>
           <div className='w-full lg:w-1/2'>
             <h2 className='text-2xl font-bold mb-4'>Editar Animal</h2>
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={handleSubmit}
+              className='space-y-6'
+            >
               <div className='mb-4'>
                 <label
                   htmlFor='name'
@@ -127,12 +133,14 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                   id='description'
                   name='description'
                   value={editedAnimal.description}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    handleInputChange(e)
-                  }
+                  onChange={handleInputChange}
                   className='w-full p-2 border rounded'
-                  rows={5} // Añadimos esta línea para hacer el textarea más alto
+                  rows={12}
+                  maxLength={500}
                 />
+                <p className='text-sm text-gray-500 mt-1'>
+                  {editedAnimal.description.length}/500 caracteres
+                </p>
               </div>
               <div className='mb-4'>
                 <label
