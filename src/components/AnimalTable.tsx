@@ -224,105 +224,118 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
             </tr>
           </thead>
           <tbody>
-            {localAnimals.map((animal) => {
-              const photoUrls =
-                Array.isArray(animal.photos) && animal.photos.length > 0
-                  ? animal.photos
-                  : ['/default-image.jpg'];
-
-              return (
-                <tr
-                  key={animal.id}
-                  className='flex flex-col lg:table-row mb-4 lg:mb-0 hover:bg-gray-100 transition-colors duration-300 ease-in-out bg-white rounded-lg shadow-md lg:shadow-none lg:rounded-none'
+            {localAnimals.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={9}
+                  className='text-center py-8'
                 >
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Imágenes:</span>
-                    <div className='flex flex-wrap gap-2'>
-                      <div className='w-20 h-20 lg:w-32 lg:h-32 relative overflow-hidden rounded-lg shadow-md bg-gray-100 flex items-center justify-center'>
-                        <img
-                          src={photoUrls[0] || '/default-image.jpg'}
-                          alt={`${animal.name}`}
-                          className='max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105 cursor-pointer'
-                          onClick={() => handleImageClick(animal)}
-                        />
+                  <p className='text-xl font-semibold text-gray-600'>
+                    No hay ningún animal registrado
+                  </p>
+                </td>
+              </tr>
+            ) : (
+              localAnimals.map((animal) => {
+                const photoUrls =
+                  Array.isArray(animal.photos) && animal.photos.length > 0
+                    ? animal.photos
+                    : ['/default-image.jpg'];
+
+                return (
+                  <tr
+                    key={animal.id}
+                    className='flex flex-col lg:table-row mb-4 lg:mb-0 hover:bg-gray-100 transition-colors duration-300 ease-in-out bg-white rounded-lg shadow-md lg:shadow-none lg:rounded-none'
+                  >
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>Imágenes:</span>
+                      <div className='flex flex-wrap gap-2'>
+                        <div className='w-20 h-20 lg:w-32 lg:h-32 relative overflow-hidden rounded-lg shadow-md bg-gray-100 flex items-center justify-center'>
+                          <img
+                            src={photoUrls[0] || '/default-image.jpg'}
+                            alt={`${animal.name}`}
+                            className='max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105 cursor-pointer'
+                            onClick={() => handleImageClick(animal)}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Nombre:</span>
-                    <span className='font-medium text-gray-700'>
-                      {animal.name}
-                    </span>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Edad:</span>
-                    <span className='text-gray-600'>
-                      {animal.age === 'puppy' && 'Cachorro'}
-                      {animal.age === 'young' && 'Joven'}
-                      {animal.age === 'adult' && 'Adulto'}
-                      {animal.age === 'senior' && 'Anciano'}
-                    </span>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Tipo:</span>
-                    <span className='text-gray-600'>
-                      {animal.type === 'dog' && 'Perro'}
-                      {animal.type === 'cat' && 'Gato'}
-                      {animal.type === 'other' && 'Otro'}
-                    </span>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>
-                      Fecha de registro:
-                    </span>
-                    <span className='text-gray-600'>
-                      {new Date(animal.register_date).toLocaleDateString()}
-                    </span>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Género:</span>
-                    <span className='text-gray-600'>
-                      {animal.genre === 'male' && 'Macho'}
-                      {animal.genre === 'female' && 'Hembra'}
-                      {animal.genre === 'unknown' && 'Desconocido'}
-                    </span>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Tamaño:</span>
-                    <span className='text-gray-600'>
-                      {animal.size === 'small' && 'Pequeño'}
-                      {animal.size === 'medium' && 'Mediano'}
-                      {animal.size === 'big' && 'Grande'}
-                    </span>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
-                    <span className='lg:hidden font-semibold'>Adoptado:</span>
-                    <div className='flex items-center space-x-2'>
-                      <input
-                        type='checkbox'
-                        checked={animal.adopted}
-                        onChange={(e) =>
-                          handleAdoptedChange(animal.id, e.target.checked)
-                        }
-                        className='form-checkbox h-6 w-6 text-indigo-500 bg-gray-700 border-gray-300 rounded-md transition duration-200 ease-in-out focus:ring-2 focus:ring-indigo-500'
-                      />
-                      <span className='lg:hidden text-gray-600'>
-                        {animal.adopted ? 'Sí' : 'No'}
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>Nombre:</span>
+                      <span className='font-medium text-gray-700'>
+                        {animal.name}
                       </span>
-                    </div>
-                  </td>
-                  <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300'>
-                    <Button
-                      className='bg-gradient-to-r from-red-400 to-pink-400 hover:from-red-500 hover:to-pink-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full lg:w-auto'
-                      onClick={() => handleDeleteClick(animal.id)}
-                      disabled={isDeleting || confirmDelete !== null}
-                    >
-                      Eliminar
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>Edad:</span>
+                      <span className='text-gray-600'>
+                        {animal.age === 'puppy' && 'Cachorro'}
+                        {animal.age === 'young' && 'Joven'}
+                        {animal.age === 'adult' && 'Adulto'}
+                        {animal.age === 'senior' && 'Anciano'}
+                      </span>
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>Tipo:</span>
+                      <span className='text-gray-600'>
+                        {animal.type === 'dog' && 'Perro'}
+                        {animal.type === 'cat' && 'Gato'}
+                        {animal.type === 'other' && 'Otro'}
+                      </span>
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>
+                        Fecha de registro:
+                      </span>
+                      <span className='text-gray-600'>
+                        {new Date(animal.register_date).toLocaleDateString()}
+                      </span>
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>Género:</span>
+                      <span className='text-gray-600'>
+                        {animal.genre === 'male' && 'Macho'}
+                        {animal.genre === 'female' && 'Hembra'}
+                        {animal.genre === 'unknown' && 'Desconocido'}
+                      </span>
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>Tamaño:</span>
+                      <span className='text-gray-600'>
+                        {animal.size === 'small' && 'Pequeño'}
+                        {animal.size === 'medium' && 'Mediano'}
+                        {animal.size === 'big' && 'Grande'}
+                      </span>
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300 flex items-center justify-between lg:table-cell'>
+                      <span className='lg:hidden font-semibold'>Adoptado:</span>
+                      <div className='flex items-center space-x-2'>
+                        <input
+                          type='checkbox'
+                          checked={animal.adopted}
+                          onChange={(e) =>
+                            handleAdoptedChange(animal.id, e.target.checked)
+                          }
+                          className='form-checkbox h-6 w-6 text-indigo-500 bg-gray-700 border-gray-300 rounded-md transition duration-200 ease-in-out focus:ring-2 focus:ring-indigo-500'
+                        />
+                        <span className='lg:hidden text-gray-600'>
+                          {animal.adopted ? 'Sí' : 'No'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className='py-3 lg:py-5 px-4 lg:px-6 border-b border-gray-300'>
+                      <Button
+                        className='bg-gradient-to-r from-red-400 to-pink-400 hover:from-red-500 hover:to-pink-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full lg:w-auto'
+                        onClick={() => handleDeleteClick(animal.id)}
+                        disabled={isDeleting || confirmDelete !== null}
+                      >
+                        Eliminar
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>

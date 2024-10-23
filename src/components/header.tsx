@@ -10,9 +10,19 @@ export const Header = () => {
 
   return (
     <header className='mx-4 sm:mx-8 md:mx-16 lg:mx-32 pt-6 sm:pt-10'>
-      <h1 className='text-center text-4xl sm:text-5xl md:text-6xl font-semibold font-serif text-gray-800 mb-4 sm:mb-6'>
-        Fido
-      </h1>
+      <div className='flex items-center justify-center mb-4 sm:mb-6'>
+        <img
+          src='/fido-logo-cuadrado.png'
+          alt='logo de fido'
+          className='w-16 h-16 mr-4'
+        />
+        <h1 className='text-4xl sm:text-5xl md:text-6xl font-semibold font-serif text-gray-800'>
+          Fido
+        </h1>
+      </div>
+      <h2 className='text-center text-gray-500 text-lg sm:text-xl md:text-2xl'>
+        Web de gestion interna
+      </h2>
       <nav className='flex flex-col sm:flex-row justify-between items-center sm:items-end gap-3 sm:gap-6'>
         {session && (
           <div className='flex flex-col sm:flex-row gap-3 sm:gap-6'>
