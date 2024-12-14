@@ -25,13 +25,13 @@ const handler = NextAuth({
       async authorize(credentials, req) {
         // Verificamos las credenciales fijas
         if (
-          credentials?.name === 'fido' &&
-          credentials?.password === 'fido-1234'
+          credentials?.name === 'huellas' &&
+          credentials?.password === 'huellas-1234'
         ) {
           return {
             id: '1',
-            name: 'Fido'
-            /* email: 'fido@ejemplo.com' */
+            name: 'Huellas'
+            /* email: 'huellas@ejemplo.com' */
           };
         } else {
           return null;

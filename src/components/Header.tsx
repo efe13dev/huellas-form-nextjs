@@ -17,7 +17,7 @@ export const Header = () => {
           className='w-16 h-16 mr-4'
         />
         <h1 className='text-4xl sm:text-5xl md:text-6xl font-semibold font-serif text-gray-800'>
-          Fido
+          Huellas
         </h1>
       </div>
       <h2 className='text-center text-gray-500 text-lg sm:text-xl md:text-2xl'>
