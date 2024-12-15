@@ -12,7 +12,7 @@ export const Header = () => {
     <header className='mx-4 sm:mx-8 md:mx-16 lg:mx-32 pt-6 sm:pt-10'>
       <div className='flex items-center justify-center mb-4 sm:mb-6'>
         <img
-          src='/fido-logo-cuadrado.png'
+          src='/logo-huellas-opt.png'
           alt='logo de fido'
           className='w-16 h-16 mr-4'
         />
