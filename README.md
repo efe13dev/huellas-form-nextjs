@@ -1,4 +1,4 @@
-# 🐾 Fido - Sistema de Gestión Interna para Protectora de Animales
+# 🐾 Fido - Sistema de Gestión Interna para Protectora de Animales.
 
 ## 📝 Descripción
 
@@ -45,7 +45,7 @@ Este proyecto es una aplicación web interna para la gestión de datos de la pro
 
 **Nota**: Se requiere autenticación para acceder a la aplicación.
 
-## 📝 Tareas
+## 📝 Tareas ✅
 
 - [x] Restringir el select files a imágenes y limitar la cantidad a 5
 - [x] Hacer mas ancho el formulario de edición
