@@ -7,8 +7,8 @@ import AuthProvider from './AuthProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Fido',
-  description: 'Web interna de la protectora Fido'
+  title: 'Huellas',
+  description: 'Web interna de la protectora Huellas'
 };
 
 export default function RootLayout({

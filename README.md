@@ -1,51 +1,51 @@
-# Fido - Sistema de Gestión Interna para Protectora de Animales
+# 🐾 Fido - Sistema de Gestión Interna para Protectora de Animales
 
-## Descripción
+## 📝 Descripción
 
-Este proyecto es una aplicación web interna para la gestión de datos de la protectora de animales Fido. Permite agregar, editar y eliminar registros de animales, con almacenamiento de imágenes optimizadas y autenticación de usuarios.
+Este proyecto es una aplicación web interna para la gestión de datos de la protectora de animales Huellas. Permite agregar, editar y eliminar registros de animales, con almacenamiento de imágenes optimizadas y autenticación de usuarios.
 
-## Características principales
+## ⭐ Características principales
 
-- Formulario para agregar nuevos animales
-- Base de datos gestionada con **TURSO**
-- Desarrollado con Next.js, TypeScript, TailwindCSS y componentes shadcn
-- Procesamiento de imágenes con Sharp (optimización y marca de agua)
-- Almacenamiento de imágenes en Cloudinary
-- Autenticación de usuarios con AuthJS
-- Interfaz para editar y eliminar registros existentes
+- 📋 Formulario para agregar nuevos animales
+- 🗄️ Base de datos gestionada con **TURSO**
+- 💻 Desarrollado con Next.js, TypeScript, TailwindCSS y componentes shadcn
+- 🖼️ Procesamiento de imágenes con Sharp (optimización y marca de agua)
+- ☁️ Almacenamiento de imágenes en Cloudinary
+- 🔐 Autenticación de usuarios con AuthJS
+- ✏️ Interfaz para editar y eliminar registros existentes
 
-## Tecnologías utilizadas
+## 🛠️ Tecnologías utilizadas
 
-- Next.js
-- TypeScript
-- TailwindCSS
-- Sharp
-- Cloudinary
-- AuthJS
-- TURSO (base de datos)
+- ⚡ Next.js
+- 📘 TypeScript
+- 🎨 TailwindCSS
+- 🔧 Sharp
+- ☁️ Cloudinary
+- 🔒 AuthJS
+- 💾 TURSO (base de datos)
 
-## Instalación y uso
+## 🚀 Instalación y uso
 
 1. Clonar el repositorio:
-   ```
+   ```bash
    git clone [URL_DEL_REPOSITORIO]
    ```
 2. Instalar dependencias:
-   ```
+   ```bash
    npm install
    ```
 3. Ejecutar en modo desarrollo:
-   ```
+   ```bash
    npm run dev
    ```
 4. Abrir en el navegador:
-   ```
+   ```bash
    http://localhost:3000
    ```
 
 **Nota**: Se requiere autenticación para acceder a la aplicación.
 
-## Tareas
+## 📝 Tareas
 
 - [x] Restringir el select files a imágenes y limitar la cantidad a 5
 - [x] Hacer mas ancho el formulario de edición
@@ -67,7 +67,7 @@ Este proyecto es una aplicación web interna para la gestión de datos de la pro
 - [x] Implementar conexión con Cloudinary
 - [x] Crear vista para gestión de registros (CRUD)
 
-## Contribución
+## 🤝 Contribución
 
 Para contribuir al proyecto, por favor sigue estos pasos:
 
@@ -77,7 +77,7 @@ Para contribuir al proyecto, por favor sigue estos pasos:
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## Contacto
+## 📲 Contacto
 
 Para cualquier consulta o información adicional, puedes contactarme en:
 
