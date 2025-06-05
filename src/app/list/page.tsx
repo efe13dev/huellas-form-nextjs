@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { AnimalType } from '@/types';
 import AnimalTable from '@/components/AnimalTable';
 import extractIdFromUrl from '@/utils/extractIdFromUrl';
@@ -11,6 +13,14 @@ import {
 import { deleteImageFromCloudinary } from '../services/cloudinaryService';
 
 function ListPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
   const [animals, setAnimals] = useState<AnimalType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -75,10 +85,14 @@ function ListPage() {
     []
   );
 
-  if (loading) {
+  if (status === 'loading' || loading) {
     return (
       <div className='text-center text-xl pt-20 font-semibold'>Cargando...</div>
     );
+  }
+
+  if (status === 'unauthenticated') {
+    return null;
   }
 
   return (

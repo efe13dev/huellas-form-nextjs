@@ -1,17 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importa los íconos
 
 export default function Login() {
+  const { data: session, status } = useSession();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  // Si ya hay sesión activa, redirige a /list
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/list');
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,8 +36,7 @@ export default function Login() {
       if (result?.error) {
         setError('Nombre de usuario o contraseña inválidos');
       } else {
-        router.push('/');
-        router.refresh(); // Añadido para forzar la actualización del estado de la sesión
+        window.location.href = '/list'; // Recarga total para asegurar la sesión
       }
     } catch (error) {
       setError(
@@ -39,6 +46,16 @@ export default function Login() {
       setIsLoading(false);
     }
   };
+
+  // Si la sesión está cargando, muestra un loading
+  if (status === 'loading') {
+    return <div className='min-h-screen flex items-center justify-center'>Cargando...</div>;
+  }
+
+  // Si ya está autenticado, no mostrar nada (el useEffect ya redirige)
+  if (status === 'authenticated') {
+    return null;
+  }
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-start pt-36 px-4 sm:px-6 lg:px-8'>
