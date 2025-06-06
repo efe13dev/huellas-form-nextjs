@@ -3,10 +3,15 @@ import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 export async function middleware(request: NextRequest) {
+  const cookie = request.cookies.get('next-auth.session-token')?.value || request.cookies.get('__Secure-next-auth.session-token')?.value;
+  console.log('MIDDLEWARE RAW COOKIE:', cookie);
+
   const session = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET
   });
+
+  console.log('MIDDLEWARE SESSION:', session);
 
   if (
     !session &&
