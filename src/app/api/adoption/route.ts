@@ -54,10 +54,8 @@ export async function GET() {
     const result = await client.execute(
       'SELECT * FROM animals ORDER BY register_date DESC'
     );
-
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {
-    // eslint-disable-next-line
     console.error('Error fetching adoptions:', error);
     return NextResponse.json(
       { error: 'Failed to fetch adoptions' },
@@ -65,6 +63,7 @@ export async function GET() {
     );
   }
 }
+
 
 export async function DELETE(req: NextRequest) {
   const body = await req.json();
