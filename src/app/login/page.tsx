@@ -49,7 +49,11 @@ export default function Login() {
 
   // Si la sesión está cargando, muestra un loading
   if (status === 'loading') {
-    return <div className='min-h-screen flex items-center justify-center'>Cargando...</div>;
+    return (
+      <div className='min-h-screen flex flex-col items-center justify-start pt-36 px-4 sm:px-6 lg:px-8'>
+        <span className='text-xl text-gray-500'>Cargando...</span>
+      </div>
+    );
   }
 
   // Si ya está autenticado, no mostrar nada (el useEffect ya redirige)

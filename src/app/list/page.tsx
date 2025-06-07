@@ -23,16 +23,22 @@ function ListPage() {
   }, [status, router]);
   const [animals, setAnimals] = useState<AnimalType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAnimals()
-      .then((result) =>
-        Array.isArray(result) ? setAnimals(result) : setAnimals([result])
-      )
-      .catch(
-        // eslint-disable-next-line
-        console.error
-      )
+      .then((result) => {
+        if (!result || (Array.isArray(result) && result.length === 0)) {
+          setError('No se encontraron animales en la base de datos.');
+          setAnimals([]);
+        } else {
+          setAnimals(Array.isArray(result) ? result : [result]);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Error al cargar la lista de animales. Por favor, inténtalo de nuevo más tarde.');
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -88,6 +94,14 @@ function ListPage() {
   if (status === 'loading' || loading) {
     return (
       <div className='text-center text-xl pt-20 font-semibold'>Cargando...</div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='text-center text-red-600 text-lg pt-20 font-semibold'>
+        {error}
+      </div>
     );
   }
 

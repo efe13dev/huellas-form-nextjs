@@ -1,12 +1,22 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
 import { useSession } from 'next-auth/react';
 import LogoutButton from './LogoutButton';
 
 export const Header = () => {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  
+  const isActive = (path: string) => {
+    if (!pathname) return false;
+    if (path === '/') {
+      return pathname === path || pathname === '/add-animal';
+    }
+    return pathname.startsWith(path);
+  };
 
   return (
     <header className='mx-4 sm:mx-8 md:mx-16 lg:mx-32 pt-6 sm:pt-10'>
@@ -29,7 +39,11 @@ export const Header = () => {
             <Link href={'./'}>
               <Button
                 variant={'ghost'}
-                className='w-full sm:w-auto text-sm sm:text-base text-gray-800 hover:text-white hover:bg-gray-800 transition-colors duration-300'
+                className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
+                  isActive('/')
+                    ? 'bg-gray-800 text-white hover:bg-gray-700'
+                    : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
+                }`}
               >
                 Añadir nuevo
               </Button>
@@ -37,7 +51,11 @@ export const Header = () => {
             <Link href={'./list'}>
               <Button
                 variant={'ghost'}
-                className='w-full sm:w-auto text-sm sm:text-base text-gray-800 hover:text-white hover:bg-gray-800 transition-colors duration-300'
+                className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
+                  isActive('/list')
+                    ? 'bg-gray-800 text-white hover:bg-gray-700'
+                    : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
+                }`}
               >
                 Lista de animales
               </Button>

@@ -9,60 +9,90 @@ const client = createClient({
 });
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { name, description, type, size, age, photos, genre } =
-    body as TursoData;
+  try {
+    const body = await req.json();
+    const { name, description, type, size, age, photos, genre } = body as TursoData;
 
-  if (!name || !description || !type || !size || !age || !genre) {
-    return NextResponse.json(
-      { error: 'Faltan campos requeridos' },
-      { status: 400 }
-    );
-  }
-  if (photos) {
-    const photosJson = JSON.stringify(photos);
-    try {
-      const result = await client.batch(
-        [
-          {
-            sql: 'INSERT INTO animals(name, description, type, size, age, photos, genre) VALUES (?,?,?,?,?,?,?)',
-            args: [name, description, type, size, age, photosJson, genre]
-          }
-        ],
-        'write'
-      );
+    // Validación estricta de campos requeridos
+    if (!name || !description || !type || !size || !age || !genre) {
       return NextResponse.json(
-        { message: 'Adoption inserted successfully', result },
-        { status: 201 }
-      );
-    } catch (error) {
-      // eslint-disable-next-line
-      console.error('Error inserting adoption:', error);
-      return NextResponse.json(
-        {
-          error: 'Failed to insert adoption',
-          details: (error as Error).message
-        },
-        { status: 500 }
+        { error: 'Faltan campos requeridos' },
+        { status: 400 }
       );
     }
+
+    // Validar que genre sea string y uno de los valores permitidos
+    const allowedGenres = ['male', 'female', 'other'];
+    const genreStr = String(genre).toLowerCase();
+    if (!allowedGenres.includes(genreStr)) {
+      return NextResponse.json(
+        { error: 'El campo "genre" debe ser uno de: ' + allowedGenres.join(', ') },
+        { status: 400 }
+      );
+    }
+
+    // Validación estricta de photos: debe ser array de strings o vacío
+    if (photos !== undefined && (!Array.isArray(photos) || photos.some((p) => typeof p !== 'string'))) {
+      return NextResponse.json(
+        { error: 'El campo "photos" debe ser un array de strings' },
+        { status: 400 }
+      );
+    }
+    const safePhotos: string[] = Array.isArray(photos) ? photos.filter((p) => typeof p === 'string') : [];
+    const photosJson = JSON.stringify(safePhotos);
+
+    const result = await client.batch([
+      {
+        sql: 'INSERT INTO animals(name, description, type, size, age, photos, genre) VALUES (?,?,?,?,?,?,?)',
+        args: [name, description, type, size, age, photosJson, genreStr]
+      }
+    ], 'write');
+    return NextResponse.json(
+      { message: 'Adoption inserted successfully', result },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Error inserting adoption:', error);
+    return NextResponse.json(
+      {
+        error: 'Failed to insert adoption',
+        details: (error as Error).message
+      },
+      { status: 500 }
+    );
   }
 }
 
+
+
 export async function GET() {
   try {
+    console.log('[API] GET /api/adoption - Iniciando consulta a Turso');
     const result = await client.execute(
       'SELECT * FROM animals ORDER BY register_date DESC'
     );
-    return NextResponse.json(result.rows, { status: 200 });
+    // Robustez extra: intenta parsear photos, si falla lo deja como []
+    const safeRows = result.rows.map((row) => {
+      let safePhotos: string[] = [];
+      try {
+        safePhotos = row.photos ? JSON.parse(typeof row.photos === 'string' ? row.photos : String(row.photos)) : [];
+        if (!Array.isArray(safePhotos)) safePhotos = [];
+      } catch {
+        safePhotos = [];
+      }
+      return { ...row, photos: safePhotos };
+    });
+    console.log('[API] GET /api/adoption - Consulta completada. Filas:', safeRows.length);
+    return NextResponse.json(safeRows, { status: 200 });
   } catch (error) {
-    console.error('Error fetching adoptions:', error);
+    console.error('[API] Error fetching adoptions:', error);
     return NextResponse.json(
       { error: 'Failed to fetch adoptions' },
       { status: 500 }
     );
   }
 }
+
 
 
 export async function DELETE(req: NextRequest) {

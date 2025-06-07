@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang='es'>
       <body
-        className={`${inter.className} bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 min-h-screen`}
+        className={`${inter.className} min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-amber-50`}
       >
         <AuthProvider>
           <Header />
