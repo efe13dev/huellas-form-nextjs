@@ -11,10 +11,13 @@ if (!process.env.TURSO_DATABASE_URL) {
   throw new Error('TURSO_DATABASE_URL no está configurada');
 }
 
-export async function GET(
-  req: NextRequest,
-  { params: { id } }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
+
   try {
     const result = await client.execute({
       sql: 'SELECT * FROM animals WHERE id = ?',
