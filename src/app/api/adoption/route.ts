@@ -14,8 +14,11 @@ export async function POST(req: NextRequest) {
     const { name, description, type, size, age, photos, genre } =
       body as TursoData;
 
+    // Si genre no está definido, es null o es cadena vacía, asignar 'unknown'
+    const genreValue = (!genre || String(genre).trim() === "") ? "unknown" : genre;
+
     // Validación estricta de campos requeridos
-    if (!name || !description || !type || !size || !age || !genre) {
+    if (!name || !description || !type || !size || !age) {
       return NextResponse.json(
         { error: "Faltan campos requeridos" },
         { status: 400 }
@@ -24,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     // Validar que genre sea string y uno de los valores permitidos
     const allowedGenres = ["male", "female", "unknown"];
-    const genreStr = String(genre).toLowerCase();
+    const genreStr = String(genreValue).toLowerCase();
     if (!allowedGenres.includes(genreStr)) {
       return NextResponse.json(
         {
