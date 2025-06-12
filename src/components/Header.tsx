@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import LogoutButton from './LogoutButton';
 
 export const Header = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   
   const isActive = (path: string) => {
@@ -20,7 +20,7 @@ export const Header = () => {
   };
 
   return (
-    <header className='mx-4 sm:mx-8 md:mx-16 lg:mx-32 pt-6 sm:pt-10'>
+    <header className='mx-4 sm:mx-8 md:mx-16 lg:mx-32 pt-6 sm:pt-10 min-h-[170px]'>
       <div className='flex items-center justify-center mb-4 sm:mb-6'>
         <motion.img
   src='/logo-huellas-opt.png'
@@ -53,40 +53,42 @@ export const Header = () => {
   ))}
 </h2>
       <nav className='flex flex-col sm:flex-row justify-between items-center sm:items-end gap-3 sm:gap-6'>
-        {session && (
-          <div className='flex flex-col sm:flex-row gap-3 sm:gap-6'>
-            <Link href={'./'}>
-              <Button
-                variant={'ghost'}
-                className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
-                  isActive('/')
-                    ? 'bg-gray-800 text-white hover:bg-gray-700'
-                    : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
-                }`}
-              >
-                Añadir nuevo
-              </Button>
-            </Link>
-            <Link href={'./list'}>
-              <Button
-                variant={'ghost'}
-                className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
-                  isActive('/list')
-                    ? 'bg-gray-800 text-white hover:bg-gray-700'
-                    : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
-                }`}
-              >
-                Lista de animales
-              </Button>
-            </Link>
-          </div>
-        )}
-        <div className='flex items-center gap-3'>
-          {session && (
+        <div className='flex flex-col sm:flex-row gap-3 sm:gap-6 min-h-[44px] mt-4 mb-4'>
+          {status === "loading" ? (
+            <div className="w-[230px] h-[44px] sm:w-[350px]"></div>
+          ) : session ? (
             <>
-              <LogoutButton />
+              <Link href={'./'}>
+                <Button
+                  variant={'ghost'}
+                  className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
+                    isActive('/')
+                      ? 'bg-gray-800 text-white hover:bg-gray-700'
+                      : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  Añadir nuevo
+                </Button>
+              </Link>
+              <Link href={'./list'}>
+                <Button
+                  variant={'ghost'}
+                  className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
+                    isActive('/list')
+                      ? 'bg-gray-800 text-white hover:bg-gray-700'
+                      : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  Lista de animales
+                </Button>
+              </Link>
             </>
+          ) : (
+            <div className="w-[230px] h-[44px] sm:w-[350px]"></div>
           )}
+        </div>
+        <div className='flex items-center gap-3'>
+          {status !== "loading" && session && <LogoutButton />}
         </div>
       </nav>
     </header>
