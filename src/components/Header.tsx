@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
@@ -21,18 +22,36 @@ export const Header = () => {
   return (
     <header className='mx-4 sm:mx-8 md:mx-16 lg:mx-32 pt-6 sm:pt-10'>
       <div className='flex items-center justify-center mb-4 sm:mb-6'>
-        <img
-          src='/logo-huellas-opt.png'
-          alt='logo de fido'
-          className='w-16 h-16 mr-4'
-        />
-        <h1 className='text-4xl sm:text-5xl md:text-6xl font-semibold font-serif text-gray-800'>
-          Huellas
-        </h1>
+        <motion.img
+  src='/logo-huellas-opt.png'
+  alt='logo de fido'
+  className='w-16 h-16 mr-4'
+  initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
+  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+  transition={{ duration: 0.6, ease: 'easeOut', delay: 0 }}
+/>
+<motion.h1
+  className='text-4xl sm:text-5xl md:text-6xl font-semibold font-serif text-gray-800'
+  initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
+  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+  transition={{ duration: 0.6, ease: 'easeOut', delay: 0.13 }}
+>
+  Huellas
+</motion.h1>
       </div>
       <h2 className='text-center text-gray-500 text-lg sm:text-xl md:text-2xl'>
-        Web de gestion interna
-      </h2>
+  {["Web", "de", "gestion", "interna"].map((palabra, i) => (
+    <motion.span
+      key={palabra + i}
+      initial={{ opacity: 0, y: 40, filter: 'blur(8px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      transition={{ duration: 0.6, ease: 'easeOut', delay: 0.25 + i * 0.15 }}
+      className="inline-block mr-2"
+    >
+      {palabra}
+    </motion.span>
+  ))}
+</h2>
       <nav className='flex flex-col sm:flex-row justify-between items-center sm:items-end gap-3 sm:gap-6'>
         {session && (
           <div className='flex flex-col sm:flex-row gap-3 sm:gap-6'>
