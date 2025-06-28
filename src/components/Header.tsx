@@ -86,6 +86,18 @@ export const Header = () => {
                   Lista de animales
                 </Button>
               </Link>
+              <Link href={"./news"}>
+                <Button
+                  variant={"ghost"}
+                  className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
+                    isActive("/news")
+                      ? "bg-gray-800 text-white hover:bg-gray-700"
+                      : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
+                  }`}
+                >
+                  Añadir noticia
+                </Button>
+              </Link>
             </>
           ) : (
             <div className="w-[230px] h-[44px] sm:w-[350px]"></div>

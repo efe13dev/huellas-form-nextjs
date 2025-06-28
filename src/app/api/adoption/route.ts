@@ -103,6 +103,7 @@ export async function GET() {
       "[API] GET /api/adoption - Consulta completada. Filas:",
       safeRows.length
     );
+    console.log("[API] GET /api/adoption - Datos:", safeRows);
     return NextResponse.json(safeRows, { status: 200 });
   } catch (error) {
     console.error("[API] Error fetching adoptions:", error);

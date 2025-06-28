@@ -12,3 +12,11 @@ export interface AnimalType {
 }
 
 export type TursoData = Omit<AnimalType, 'id' | 'register_date' | 'adopted'>;
+
+export interface NewsType {
+  id: string;
+  title: string;
+  content: string;
+  image: string;
+  date: string;
+}
