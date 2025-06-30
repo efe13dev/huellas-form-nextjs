@@ -14,9 +14,9 @@ export const Header = () => {
   const isActive = (path: string) => {
     if (!pathname) return false;
     if (path === "/") {
-      return pathname === path || pathname === "/add-animal";
+      return pathname === "/" || pathname === "/add-animal";
     }
-    return pathname.startsWith(path);
+    return pathname === path;
   };
 
   return (
@@ -67,7 +67,7 @@ export const Header = () => {
                   variant={"ghost"}
                   className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
                     isActive("/")
-                      ? "bg-gray-800 text-white hover:bg-gray-700"
+                      ? "bg-gray-800 text-white hover:bg-gray-700 hover:text-white"
                       : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >
@@ -79,7 +79,7 @@ export const Header = () => {
                   variant={"ghost"}
                   className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
                     isActive("/list")
-                      ? "bg-gray-800 text-white hover:bg-gray-700"
+                      ? "bg-gray-800 text-white hover:bg-gray-700 hover:text-white"
                       : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >
@@ -91,7 +91,7 @@ export const Header = () => {
                   variant={"ghost"}
                   className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
                     isActive("/news")
-                      ? "bg-gray-800 text-white hover:bg-gray-700"
+                      ? "bg-gray-800 text-white hover:bg-gray-700 hover:text-white"
                       : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >
@@ -103,7 +103,7 @@ export const Header = () => {
                   variant={"ghost"}
                   className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${
                     isActive("/news-list")
-                      ? "bg-gray-800 text-white hover:bg-gray-700"
+                      ? "bg-gray-800 text-white hover:bg-gray-700 hover:text-white"
                       : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >

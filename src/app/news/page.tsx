@@ -29,9 +29,7 @@ export default function NewsPage() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
-  const [showNewsList, setShowNewsList] = useState(false);
-  const [newsList, setNewsList] = useState<any[]>([]);
-  const [isLoadingNews, setIsLoadingNews] = useState(false);
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -193,26 +191,7 @@ export default function NewsPage() {
             >
               {isLoading ? 'Enviando...' : 'Añadir Noticia'}
             </Button>
-            <Button
-              type='button'
-              className='w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105'
-              onClick={async () => {
-                if (!showNewsList) {
-                  setIsLoadingNews(true);
-                  try {
-                    const res = await fetch('/api/news');
-                    const data = await res.json();
-                    setNewsList(data);
-                  } catch (e) {
-                    setNewsList([]);
-                  }
-                  setIsLoadingNews(false);
-                }
-                setShowNewsList(!showNewsList);
-              }}
-            >
-              {showNewsList ? 'Ocultar listado' : 'Listado de noticias'}
-            </Button>
+
           </div>
 
           {isLoading && (
@@ -223,32 +202,7 @@ export default function NewsPage() {
         </form>
       </Form>
 
-      {showNewsList && (
-        <div className='mt-8 bg-white rounded shadow p-4'>
-          <h2 className='text-lg font-bold mb-4 text-blue-700'>Listado de Noticias</h2>
-          {isLoadingNews ? (
-            <div className='text-center text-gray-500'>Cargando noticias...</div>
-          ) : newsList.length === 0 ? (
-            <div className='text-center text-gray-500'>No hay noticias disponibles.</div>
-          ) : (
-            <ul className='divide-y divide-gray-200'>
-              {newsList.map((news) => (
-                <li key={news.id} className='py-3'>
-                  <div className='flex flex-col md:flex-row md:items-center md:justify-between'>
-                    <div>
-                      <span className='font-semibold text-blue-900'>{news.title}</span>
-                      <span className='ml-3 text-xs text-gray-500'>{new Date(news.date).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })}</span>
-                    </div>
-                    <div className='text-gray-700 mt-2 md:mt-0'>
-                      {news.content.slice(0, 60)}{news.content.length > 60 ? '...' : ''}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+
 
       {showConfirmation && (
         <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'>
