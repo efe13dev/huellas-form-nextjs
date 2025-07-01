@@ -18,10 +18,11 @@ const client = createClient({
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const params = await props.params;
+    const { id } = params;
     
     const result = await client.execute({
       sql: "SELECT * FROM news WHERE id = ?",
@@ -47,10 +48,11 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const params = await props.params;
+    const { id } = params;
     const body = await req.json();
     const { title, content, image } = body as Partial<NewsType>;
 
@@ -155,10 +157,11 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  props: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
+    const params = await props.params;
+    const { id } = params;
 
     const result = await client.execute({
       sql: "DELETE FROM news WHERE id = ?",
