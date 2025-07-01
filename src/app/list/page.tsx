@@ -36,7 +36,6 @@ function ListPage() {
         }
       })
       .catch((err) => {
-        console.error(err);
         setError('Error al cargar la lista de animales. Por favor, inténtalo de nuevo más tarde.');
       })
       .finally(() => setLoading(false));

@@ -80,7 +80,6 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    console.log("[API] GET /api/adoption - Iniciando consulta a Turso");
     const result = await client.execute(
       "SELECT * FROM animals ORDER BY register_date DESC"
     );
@@ -99,11 +98,6 @@ export async function GET() {
       }
       return { ...row, photos: safePhotos };
     });
-    console.log(
-      "[API] GET /api/adoption - Consulta completada. Filas:",
-      safeRows.length
-    );
-    console.log("[API] GET /api/adoption - Datos:", safeRows);
     return NextResponse.json(safeRows, { status: 200 });
   } catch (error) {
     console.error("[API] Error fetching adoptions:", error);

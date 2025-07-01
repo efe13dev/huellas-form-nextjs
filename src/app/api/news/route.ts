@@ -48,15 +48,9 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    console.log("[API] GET /api/news - Iniciando consulta a Turso");
     const result = await client.execute(
       "SELECT * FROM news ORDER BY date DESC"
     );
-    console.log(
-      "[API] GET /api/news - Consulta completada. Filas:",
-      result.rows.length
-    );
-    console.log("[API] GET /api/news - Datos:", result.rows);
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {
     console.error("[API] Error fetching news:", error);
