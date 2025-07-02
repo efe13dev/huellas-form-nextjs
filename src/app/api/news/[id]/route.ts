@@ -2,14 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@libsql/client";
 import { NewsType } from "@/types";
-import { v2 as cloudinary } from "cloudinary";
-
-// Configurar Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 const client = createClient({
   url: process.env.TURSO_DATABASE_URL ?? "",
@@ -54,22 +46,9 @@ export async function PUT(
     const params = await props.params;
     const { id } = params;
     const body = await req.json();
-    const { title, content, image } = body as Partial<NewsType>;
+    const { title, content } = body as Partial<NewsType>;
 
-    // Si hay una nueva imagen, obtener la imagen actual para eliminarla de Cloudinary
-    let oldImageUrl = null;
-    if (image !== undefined) {
-      const currentResult = await client.execute({
-        sql: "SELECT image FROM news WHERE id = ?",
-        args: [id],
-      });
-      
-      if (currentResult.rows.length > 0) {
-        oldImageUrl = currentResult.rows[0].image as string;
-      }
-    }
-
-    // Construir la consulta dinámicamente
+    // Construir la consulta dinámicamente (solo título y contenido)
     const updates: string[] = [];
     const args: any[] = [];
 
@@ -80,10 +59,6 @@ export async function PUT(
     if (content !== undefined) {
       updates.push("content = ?");
       args.push(content);
-    }
-    if (image !== undefined) {
-      updates.push("image = ?");
-      args.push(image);
     }
 
     if (updates.length === 0) {
@@ -100,37 +75,6 @@ export async function PUT(
       sql,
       args,
     });
-
-    // Si había una imagen anterior y se actualizó con una nueva, eliminar la anterior de Cloudinary
-    if (oldImageUrl && image && oldImageUrl !== image) {
-      try {
-        // Extraer el public_id de la URL de Cloudinary
-        // URL típica: https://res.cloudinary.com/cloud_name/image/upload/v1234567890/public_id.jpg
-        const urlParts = oldImageUrl.split('/');
-        const uploadIndex = urlParts.findIndex(part => part === 'upload');
-        let publicId: string;
-        
-        if (uploadIndex !== -1 && uploadIndex + 2 < urlParts.length) {
-          // Saltar 'upload' y la versión (v1234567890) para obtener el public_id
-          const fileWithExtension = urlParts[uploadIndex + 2];
-          publicId = fileWithExtension.split('.')[0];
-        } else {
-          // Fallback al método anterior si no se encuentra la estructura esperada
-          const fileWithExtension = urlParts[urlParts.length - 1];
-          publicId = fileWithExtension.split('.')[0];
-        }
-        
-        // Eliminar de Cloudinary directamente
-        const result = await cloudinary.uploader.destroy(publicId);
-        
-        if (result.result !== 'ok') {
-          console.error('Error eliminando imagen anterior de Cloudinary:', result);
-        }
-      } catch (cloudinaryError) {
-        console.error('Error al eliminar imagen anterior:', cloudinaryError);
-        // No fallar la actualización si no se puede eliminar la imagen anterior
-      }
-    }
 
     // Obtener la noticia actualizada
     const result = await client.execute({
