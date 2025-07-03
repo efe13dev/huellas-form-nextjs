@@ -1,15 +1,14 @@
-'use client';
-import React, { useState } from 'react';
-import { NewsType } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { updateNews } from '@/app/services/newsService';
+"use client";
+import React, { useState } from "react";
+import { NewsType } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface EditNewsModalProps {
   news: NewsType;
   onClose: () => void;
-  onUpdate: (updatedNews: NewsType) => void;
+  onUpdate: (id: string, updatedFields: Partial<NewsType>) => Promise<void>;
 }
 
 const EditNewsModal: React.FC<EditNewsModalProps> = ({
@@ -24,25 +23,23 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-
-
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = 'El título es requerido';
+      newErrors.title = "El título es requerido";
     } else if (formData.title.length < 2) {
-      newErrors.title = 'El título debe tener al menos 2 caracteres';
+      newErrors.title = "El título debe tener al menos 2 caracteres";
     } else if (formData.title.length > 100) {
-      newErrors.title = 'El título no puede exceder 100 caracteres';
+      newErrors.title = "El título no puede exceder 100 caracteres";
     }
 
     if (!formData.content.trim()) {
-      newErrors.content = 'El contenido es requerido';
+      newErrors.content = "El contenido es requerido";
     } else if (formData.content.length < 2) {
-      newErrors.content = 'El contenido debe tener al menos 2 caracteres';
+      newErrors.content = "El contenido debe tener al menos 2 caracteres";
     } else if (formData.content.length > 5000) {
-      newErrors.content = 'El contenido no puede exceder 5000 caracteres';
+      newErrors.content = "El contenido no puede exceder 5000 caracteres";
     }
 
     setErrors(newErrors);
@@ -59,15 +56,14 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
     setIsLoading(true);
 
     try {
-      const updatedNews = await updateNews(news.id, {
+      await onUpdate(news.id, {
         title: formData.title,
         content: formData.content,
       });
-
-      onUpdate(updatedNews);
+      onClose();
     } catch (error) {
-      console.error('Error al actualizar la noticia:', error);
-      alert('Error al actualizar la noticia. Por favor, inténtalo de nuevo.');
+      console.error("Error al actualizar la noticia:", error);
+      alert("Error al actualizar la noticia. Por favor, inténtalo de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -77,15 +73,12 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Limpiar error del campo cuando el usuario empiece a escribir
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
-
-
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -112,7 +105,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full ${errors.title ? 'border-red-500' : ''}`}
+                className={`w-full ${errors.title ? "border-red-500" : ""}`}
                 placeholder="Título de la noticia"
               />
               {errors.title && (
@@ -128,7 +121,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
-                className={`w-full min-h-[200px] ${errors.content ? 'border-red-500' : ''}`}
+                className={`w-full min-h-[200px] ${errors.content ? "border-red-500" : ""}`}
                 placeholder="Contenido de la noticia"
               />
               {errors.content && (
@@ -150,7 +143,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
                 disabled={isLoading}
                 className="bg-blue-600 hover:bg-blue-700"
               >
-                {isLoading ? 'Actualizando...' : 'Actualizar Noticia'}
+                {isLoading ? "Actualizando..." : "Actualizar Noticia"}
               </Button>
             </div>
           </form>

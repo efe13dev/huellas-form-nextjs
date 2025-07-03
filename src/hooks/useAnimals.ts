@@ -32,7 +32,7 @@ export function useAnimals() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleDeleteAnimal = useCallback(async (id: string) => {
+  const handleDeleteAnimal = useCallback(async (id: string): Promise<void> => {
     if (!id) {
       throw new Error('Error: no hay ID para eliminar');
     }
@@ -54,12 +54,11 @@ export function useAnimals() {
       setAnimals((prevAnimals) =>
         prevAnimals.filter((animal) => animal.id !== id)
       );
-      return true;
     } catch (error) {
       // eslint-disable-next-line
       console.error('Error al eliminar el animal:', error);
       alert('Hubo un error al eliminar el animal');
-      return false;
+      throw error;
     }
   }, []);
 
