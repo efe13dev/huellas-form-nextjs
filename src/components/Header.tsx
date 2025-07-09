@@ -71,7 +71,7 @@ export const Header = () => {
                       : "text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >
-                  Añadir nuevo
+                  Añadir animal
                 </Button>
               </Link>
               <Link href={"./list"}>
