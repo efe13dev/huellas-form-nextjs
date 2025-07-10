@@ -4,12 +4,24 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { AnimalType } from '@/types';
 import AnimalTable from '@/components/AnimalTable';
+import Pagination from '@/components/Pagination';
 import { useAnimals } from '@/hooks/useAnimals';
+import { usePagination } from '@/hooks/usePagination';
 
 function ListPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { animals, loading, error, handleDeleteAnimal, handleUpdateAnimal } = useAnimals();
+  
+  // Configurar paginación
+  const {
+    currentPage,
+    totalPages,
+    paginatedData: paginatedAnimals,
+    goToPage,
+    itemsPerPage,
+    totalItems
+  } = usePagination({ data: animals, itemsPerPage: 10 });
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -41,11 +53,19 @@ function ListPage() {
         Listado de Animales
       </h1>
       <AnimalTable
-        animals={animals}
+        animals={paginatedAnimals}
         onDelete={handleDeleteAnimal}
         onUpdate={(animalData: AnimalType) =>
           handleUpdateAnimal(animalData.id, animalData)
         }
+      />
+      
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={goToPage}
+        itemsPerPage={itemsPerPage}
+        totalItems={totalItems}
       />
     </div>
   );

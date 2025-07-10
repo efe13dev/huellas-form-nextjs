@@ -117,7 +117,7 @@ export default function NewsPage() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 max-w-2xl mx-auto py-8 px-4 bg-white shadow-md rounded-lg mt-4"
+          className="space-y-6 max-w-2xl mx-auto py-8 px-4 bg-white shadow-md rounded-lg mt-4 relative"
         >
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
             Añadir Nueva Noticia
@@ -257,8 +257,11 @@ export default function NewsPage() {
           </div>
 
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
-              <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 rounded-lg z-10">
+              <div className="flex flex-col items-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                <p className="text-blue-600 font-medium">Enviando noticia...</p>
+              </div>
             </div>
           )}
         </form>
