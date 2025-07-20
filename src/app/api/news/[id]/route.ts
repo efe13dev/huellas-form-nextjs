@@ -46,7 +46,7 @@ export async function PUT(
     const params = await props.params;
     const { id } = params;
     const body = await req.json();
-    const { title, content } = body as Partial<NewsType>;
+    const { title, content, type } = body as Partial<NewsType>;
 
     // Construir la consulta dinámicamente (solo título y contenido)
     const updates: string[] = [];
@@ -59,6 +59,10 @@ export async function PUT(
     if (content !== undefined) {
       updates.push("content = ?");
       args.push(content);
+    }
+    if (type !== undefined) {
+      updates.push("type = ?");
+      args.push(type);
     }
 
     if (updates.length === 0) {

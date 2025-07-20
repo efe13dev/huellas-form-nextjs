@@ -17,6 +17,7 @@ export interface NewsType {
   id: string;
   title: string;
   content: string;
+  type?: string;
   image: string;
   date: string;
 }

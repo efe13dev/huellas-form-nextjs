@@ -11,7 +11,7 @@ const client = createClient({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { title, content, image } =
+    const { title, content, type, image } =
       body as Omit<NewsType, 'id' | 'date'>;
 
     if (!title || !content || !image) {
@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
     const result = await client.batch(
       [
         {
-          sql: "INSERT INTO news(title, content, image, date) VALUES (?,?,?,?)",
-          args: [title, content, image, new Date().toISOString()],
+          sql: "INSERT INTO news(title, content, type, image, date) VALUES (?,?,?,?,?)",
+          args: [title, content, type || null, image, new Date().toISOString()],
         },
       ],
       "write"
