@@ -14,11 +14,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createNews } from "@/app/services/newsService";
 
 const formSchema = z.object({
   title: z.string().min(2).max(65),
   content: z.string().min(2).max(1000),
+  type: z.string().optional(),
   image: z.string().optional(),
 });
 
@@ -36,6 +44,7 @@ export default function NewsPage() {
     defaultValues: {
       title: "",
       content: "",
+      type: "",
       image: "",
     },
     mode: "onChange",
@@ -201,6 +210,35 @@ export default function NewsPage() {
                 </FormItem>
               );
             }}
+          />
+
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium">
+                  Tipo de Noticia (Opcional)
+                </FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="bg-gray-50 border border-gray-300 text-gray-800 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                      <SelectValue placeholder="Selecciona un tipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="urgente">Urgente</SelectItem>
+                    <SelectItem value="perdido">Perdido</SelectItem>
+                    <SelectItem value="encontrado">Encontrado</SelectItem>
+                    <SelectItem value="adopcion">Adopción</SelectItem>
+                    <SelectItem value="evento">Evento</SelectItem>
+                    <SelectItem value="noticia">Noticia</SelectItem>
+                    <SelectItem value="salud">Salud</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
           <FormField
