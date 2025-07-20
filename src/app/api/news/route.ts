@@ -11,8 +11,10 @@ const client = createClient({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { title, content, type, image } =
-      body as Omit<NewsType, 'id' | 'date'>;
+    const { title, content, type, image } = body as Omit<
+      NewsType,
+      "id" | "date"
+    >;
 
     if (!title || !content || !image) {
       return NextResponse.json(
@@ -35,6 +37,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error inserting news:", error);
     return NextResponse.json(
       {
@@ -53,6 +56,7 @@ export async function GET() {
     );
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("[API] Error fetching news:", error);
     return NextResponse.json(
       { error: "Failed to fetch news" },

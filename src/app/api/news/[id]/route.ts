@@ -15,7 +15,7 @@ export async function GET(
   try {
     const params = await props.params;
     const { id } = params;
-    
+
     const result = await client.execute({
       sql: "SELECT * FROM news WHERE id = ?",
       args: [id],
@@ -30,6 +30,7 @@ export async function GET(
 
     return NextResponse.json(result.rows[0], { status: 200 });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error fetching news:", error);
     return NextResponse.json(
       { error: "Error al obtener la noticia" },
@@ -95,6 +96,7 @@ export async function PUT(
 
     return NextResponse.json(result.rows[0], { status: 200 });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error updating news:", error);
     return NextResponse.json(
       { error: "Error al actualizar la noticia" },
@@ -128,6 +130,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error deleting news:", error);
     return NextResponse.json(
       { error: "Error al eliminar la noticia" },
