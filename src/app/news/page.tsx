@@ -128,9 +128,10 @@ export default function NewsPage() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-6 max-w-2xl mx-auto py-8 px-4 bg-white shadow-md rounded-lg mt-4 relative"
         >
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
             Añadir Nueva Noticia
           </h2>
+          <p className="text-gray-600 text-center mb-6">Crea y publica nuevas noticias para mantener informada a la comunidad sobre las últimas actualizaciones y eventos</p>
 
           <FormField
             control={form.control}

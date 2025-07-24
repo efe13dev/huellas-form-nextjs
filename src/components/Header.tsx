@@ -62,7 +62,7 @@ export const Header = () => {
             <div className="w-[230px] h-[44px] sm:w-[350px]"></div>
           ) : session ? (
             <>
-              <Link href={"./"}>
+              <Link href={"/"}>
                 <Button
                   variant={"ghost"}
                   className={`w-full sm:w-auto text-sm sm:text-base transition-colors duration-300 ${

@@ -208,11 +208,7 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
       )}
 
       <div className={`transition-all duration-300 ${isDeleting || confirmDelete ? 'filter blur-sm' : ''}`}>
-        {/* Encabezado de la tabla */}
-        <div className='mb-6'>
-          <h2 className='text-2xl md:text-3xl font-bold text-gray-800 mb-2'>Lista de Animales</h2>
-          <p className='text-gray-600'>Gestiona los animales disponibles para adopción</p>
-        </div>
+
 
         <div className='bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100'>
           <div className='overflow-x-auto'>

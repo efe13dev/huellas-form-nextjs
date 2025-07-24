@@ -37,8 +37,8 @@ function ListPage() {
 
   if (error) {
     return (
-      <div className='text-center text-red-600 text-lg pt-20 font-semibold'>
-        {error}
+      <div className='mb-6 text-center'>
+        <p className='text-gray-600'>Gestiona los animales disponibles para adopción</p>
       </div>
     );
   }
@@ -49,9 +49,10 @@ function ListPage() {
 
   return (
     <div className='container mx-auto p-4'>
-      <h1 className='text-2xl font-bold mb-4 text-center text-slate-600'>
+      <h1 className='text-2xl font-bold mb-2 text-center text-slate-600'>
         Listado de Animales
       </h1>
+      <p className='text-gray-600 text-center mb-4'>Gestiona los animales disponibles para adopción</p>
       <AnimalTable
         animals={paginatedAnimals}
         onDelete={handleDeleteAnimal}

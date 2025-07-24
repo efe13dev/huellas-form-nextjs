@@ -72,9 +72,10 @@ function NewsListPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center text-slate-600">
+      <h1 className="text-2xl font-bold mb-2 text-center text-slate-600">
         Lista de Noticias
       </h1>
+      <p className="text-gray-600 text-center mb-4">Administra y revisa todas las noticias publicadas, actualiza contenido o elimina noticias obsoletas</p>
       <NewsTable
         news={paginatedNews}
         onDelete={handleDelete}
