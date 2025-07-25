@@ -4,6 +4,13 @@ import { NewsType } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface EditNewsModalProps {
   news: NewsType;
@@ -19,6 +26,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
   const [formData, setFormData] = useState({
     title: news.title,
     content: news.content,
+    type: news.type || "none",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -42,6 +50,10 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
       newErrors.content = "El contenido no puede exceder 5000 caracteres";
     }
 
+    if (formData.type && formData.type.length > 50) {
+      newErrors.type = "El tipo no puede exceder 50 caracteres";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -59,9 +71,11 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
       await onUpdate(news.id, {
         title: formData.title,
         content: formData.content,
+        type: formData.type === "none" ? "" : formData.type,
       });
       onClose();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Error al actualizar la noticia:", error);
       alert("Error al actualizar la noticia. Por favor, inténtalo de nuevo.");
     } finally {
@@ -126,6 +140,40 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
               />
               {errors.content && (
                 <p className="text-red-500 text-sm mt-1">{errors.content}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tipo
+              </label>
+              <Select
+                value={formData.type}
+                onValueChange={(value) => {
+                  setFormData((prev) => ({ ...prev, type: value }));
+                  if (errors.type) {
+                    setErrors((prev) => ({ ...prev, type: "" }));
+                  }
+                }}
+              >
+                <SelectTrigger
+                  className={`w-full ${errors.type ? "border-red-500" : ""}`}
+                >
+                  <SelectValue placeholder="Selecciona el tipo de noticia (opcional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sin tipo</SelectItem>
+                  <SelectItem value="urgente">Urgente</SelectItem>
+                  <SelectItem value="perdido">Perdido</SelectItem>
+                  <SelectItem value="encontrado">Encontrado</SelectItem>
+                  <SelectItem value="adopcion">Adopción</SelectItem>
+                  <SelectItem value="evento">Evento</SelectItem>
+                  <SelectItem value="noticia">Noticia</SelectItem>
+                  <SelectItem value="salud">Salud</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.type && (
+                <p className="text-red-500 text-sm mt-1">{errors.type}</p>
               )}
             </div>
 
