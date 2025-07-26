@@ -39,7 +39,7 @@ export const Header = () => {
           Huellas
         </motion.h1>
       </div>
-      <h2 className="text-center text-gray-500 text-lg sm:text-xl md:text-2xl">
+      <h2 className=" text-center ml-8 text-gray-500 text-lg sm:text-xl md:text-2xl">
         {["Web", "de", "gestion", "interna"].map((palabra, i) => (
           <motion.span
             key={palabra + i}
