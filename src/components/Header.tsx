@@ -115,7 +115,7 @@ export const Header = () => {
             <div className="w-[230px] h-[44px] sm:w-[350px]"></div>
           )}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-shrink-0">
           {status !== "loading" && session && <LogoutButton />}
         </div>
       </nav>
