@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useCallback } from "react";
+
 import { NewsType } from "@/types";
+
 import EditNewsModal from "./EditNewsModal";
 
 interface NewsTableProps {
@@ -51,6 +53,7 @@ const NewsTable: React.FC<NewsTableProps> = ({ news, onDelete, onUpdate }) => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
+
     return date.toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
@@ -62,13 +65,14 @@ const NewsTable: React.FC<NewsTableProps> = ({ news, onDelete, onUpdate }) => {
 
   const truncateText = (text: string, maxLength: number) => {
     if (text.length <= maxLength) return text;
+
     return text.substring(0, maxLength) + "...";
   };
 
   if (news.length === 0) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500 text-lg">No hay noticias registradas</p>
+      <div className="py-8 text-center">
+        <p className="text-lg text-gray-500">No hay noticias registradas</p>
       </div>
     );
   }
@@ -77,45 +81,39 @@ const NewsTable: React.FC<NewsTableProps> = ({ news, onDelete, onUpdate }) => {
     <div className="relative">
       {/* Modal de confirmación de eliminación */}
       {(isDeleting || deleteMessage || confirmDelete) && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm">
-          <div className="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 ease-out scale-95 hover:scale-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-md scale-95 transform rounded-xl bg-white p-8 shadow-2xl transition-all duration-300 ease-out hover:scale-100">
             {isDeleting && (
               <div className="flex flex-col items-center">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 mb-4"></div>
-                <p className="text-xl font-bold text-gray-800">
-                  Eliminando noticia...
-                </p>
+                <div className="mb-4 h-16 w-16 animate-spin rounded-full border-b-4 border-t-4 border-indigo-600"></div>
+                <p className="text-xl font-bold text-gray-800">Eliminando noticia...</p>
               </div>
             )}
 
             {deleteMessage && !isDeleting && (
               <div className="flex flex-col items-center">
-                <div className="text-green-600 text-6xl mb-4">✓</div>
-                <p className="text-xl font-bold text-gray-800">
-                  {deleteMessage}
-                </p>
+                <div className="mb-4 text-6xl text-green-600">✓</div>
+                <p className="text-xl font-bold text-gray-800">{deleteMessage}</p>
               </div>
             )}
 
             {confirmDelete && !isDeleting && !deleteMessage && (
               <div className="text-center">
-                <div className="text-red-600 text-6xl mb-4">⚠️</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                <div className="mb-4 text-6xl text-red-600">⚠️</div>
+                <h3 className="mb-4 text-xl font-bold text-gray-800">
                   ¿Estás seguro de que quieres eliminar esta noticia?
                 </h3>
-                <p className="text-gray-600 mb-6">
-                  Esta acción no se puede deshacer.
-                </p>
+                <p className="mb-6 text-gray-600">Esta acción no se puede deshacer.</p>
                 <div className="flex justify-center space-x-4">
                   <button
                     onClick={handleCancelDelete}
-                    className="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors duration-200"
+                    className="rounded-lg bg-gray-300 px-6 py-2 text-gray-700 transition-colors duration-200 hover:bg-gray-400"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={handleConfirmDelete}
-                    className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                    className="rounded-lg bg-red-600 px-6 py-2 text-white transition-colors duration-200 hover:bg-red-700"
                   >
                     Eliminar
                   </button>
@@ -127,72 +125,68 @@ const NewsTable: React.FC<NewsTableProps> = ({ news, onDelete, onUpdate }) => {
       )}
 
       {/* Tabla de noticias */}
-      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="overflow-hidden rounded-lg bg-white shadow-lg">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Título
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Contenido
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Imagen
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Fecha
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Acciones
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 bg-white">
               {news.map((newsItem) => (
                 <tr key={newsItem.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="whitespace-nowrap px-6 py-4">
                     <div className="text-sm font-medium text-gray-900">
                       {truncateText(newsItem.title, 50)}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900 max-w-xs">
+                    <div className="max-w-xs text-sm text-gray-900">
                       {truncateText(newsItem.content, 100)}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="whitespace-nowrap px-6 py-4">
                     {newsItem.image ? (
                       <img
                         src={newsItem.image}
                         alt={newsItem.title}
-                        className="h-16 w-16 object-cover rounded-lg"
+                        className="h-16 w-16 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="h-16 w-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">
-                          Sin imagen
-                        </span>
+                      <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-200">
+                        <span className="text-xs text-gray-400">Sin imagen</span>
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {formatDate(newsItem.date)}
-                    </div>
+                  <td className="whitespace-nowrap px-6 py-4">
+                    <div className="text-sm text-gray-900">{formatDate(newsItem.date)}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleEdit(newsItem)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200"
+                        className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white transition-colors duration-200 hover:bg-blue-700"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => handleDeleteClick(newsItem.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200"
+                        className="rounded-md bg-red-600 px-3 py-1 text-sm text-white transition-colors duration-200 hover:bg-red-700"
                       >
                         Eliminar
                       </button>

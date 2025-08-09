@@ -1,5 +1,6 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
+import React from "react";
+
+import { Button } from "@/components/ui/button";
 
 interface PaginationProps {
   currentPage: number;
@@ -14,7 +15,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
   itemsPerPage,
-  totalItems
+  totalItems,
 }) => {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
@@ -22,7 +23,7 @@ const Pagination: React.FC<PaginationProps> = ({
   const getVisiblePages = () => {
     const pages = [];
     const maxVisiblePages = 5;
-    
+
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -32,37 +33,37 @@ const Pagination: React.FC<PaginationProps> = ({
         for (let i = 1; i <= 4; i++) {
           pages.push(i);
         }
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         for (let i = totalPages - 3; i <= totalPages; i++) {
           pages.push(i);
         }
       } else {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pages.push(i);
         }
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       }
     }
-    
+
     return pages;
   };
 
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex flex-col items-center gap-4 mt-6">
+    <div className="mt-6 flex flex-col items-center gap-4">
       {/* Información de elementos */}
       <div className="text-sm text-gray-600">
         Mostrando {startItem} - {endItem} de {totalItems} elementos
       </div>
-      
+
       {/* Controles de paginación */}
       <div className="flex items-center gap-2">
         {/* Botón Primera página */}
@@ -75,7 +76,7 @@ const Pagination: React.FC<PaginationProps> = ({
         >
           ««
         </Button>
-        
+
         {/* Botón Página anterior */}
         <Button
           variant="outline"
@@ -86,11 +87,11 @@ const Pagination: React.FC<PaginationProps> = ({
         >
           «
         </Button>
-        
+
         {/* Números de página */}
         {getVisiblePages().map((page, index) => (
           <React.Fragment key={index}>
-            {page === '...' ? (
+            {page === "..." ? (
               <span className="px-3 py-2 text-gray-500">...</span>
             ) : (
               <Button
@@ -104,7 +105,7 @@ const Pagination: React.FC<PaginationProps> = ({
             )}
           </React.Fragment>
         ))}
-        
+
         {/* Botón Página siguiente */}
         <Button
           variant="outline"
@@ -115,7 +116,7 @@ const Pagination: React.FC<PaginationProps> = ({
         >
           »
         </Button>
-        
+
         {/* Botón Última página */}
         <Button
           variant="outline"

@@ -11,7 +11,7 @@ export interface AnimalType {
   genre: string;
 }
 
-export type TursoData = Omit<AnimalType, 'id' | 'register_date' | 'adopted'>;
+export type TursoData = Omit<AnimalType, "id" | "register_date" | "adopted">;
 
 export interface NewsType {
   id: string;

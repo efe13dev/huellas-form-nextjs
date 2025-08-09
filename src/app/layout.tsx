@@ -1,23 +1,26 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { Header } from '@/components/Header';
-import AuthProvider from './AuthProvider';
+import type { Metadata } from "next";
 
-const inter = Inter({ subsets: ['latin'] });
+import { Inter } from "next/font/google";
+
+import AuthProvider from "./AuthProvider";
+import "./globals.css";
+
+import { Header } from "@/components/Header";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Huellas',
-  description: 'Web interna de la protectora Huellas'
+  title: "Huellas",
+  description: "Web interna de la protectora Huellas",
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='es'>
+    <html lang="es">
       <body
         className={`${inter.className} min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-amber-50`}
       >

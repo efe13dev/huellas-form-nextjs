@@ -1,8 +1,6 @@
 import { NewsType } from "@/types";
 
-export async function createNews(
-  news: Omit<NewsType, "id" | "date">
-): Promise<NewsType> {
+export async function createNews(news: Omit<NewsType, "id" | "date">): Promise<NewsType> {
   const response = await fetch("/api/news", {
     method: "POST",
     headers: {
@@ -29,10 +27,7 @@ export async function fetchNews(id?: string): Promise<NewsType | NewsType[]> {
   return response.json();
 }
 
-export async function updateNews(
-  id: string,
-  updates: Partial<NewsType>
-): Promise<NewsType> {
+export async function updateNews(id: string, updates: Partial<NewsType>): Promise<NewsType> {
   const response = await fetch(`/api/news/${id}`, {
     method: "PUT",
     headers: {
@@ -43,12 +38,12 @@ export async function updateNews(
 
   if (!response.ok) {
     const errorData = await response.text();
-    throw new Error(
-      `Error al actualizar la noticia: ${response.status} - ${errorData}`
-    );
+
+    throw new Error(`Error al actualizar la noticia: ${response.status} - ${errorData}`);
   }
 
   const result = await response.json();
+
   return result;
 }
 

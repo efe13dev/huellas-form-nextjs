@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
+
 import { NewsType } from "@/types";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,11 +20,7 @@ interface EditNewsModalProps {
   onUpdate: (id: string, updatedFields: Partial<NewsType>) => Promise<void>;
 }
 
-const EditNewsModal: React.FC<EditNewsModalProps> = ({
-  news,
-  onClose,
-  onUpdate,
-}) => {
+const EditNewsModal: React.FC<EditNewsModalProps> = ({ news, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     title: news.title,
     content: news.content,
@@ -55,6 +53,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
     }
 
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -75,7 +74,6 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
       });
       onClose();
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("Error al actualizar la noticia:", error);
       alert("Error al actualizar la noticia. Por favor, inténtalo de nuevo.");
     } finally {
@@ -83,10 +81,9 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
     }
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (errors[name]) {
@@ -95,25 +92,19 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
         <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6 flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-800">Editar Noticia</h2>
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              className="text-gray-500 hover:text-gray-700"
-            >
+            <Button onClick={onClose} variant="ghost" className="text-gray-500 hover:text-gray-700">
               ✕
             </Button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Título *
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Título *</label>
               <Input
                 type="text"
                 name="title"
@@ -122,31 +113,23 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
                 className={`w-full ${errors.title ? "border-red-500" : ""}`}
                 placeholder="Título de la noticia"
               />
-              {errors.title && (
-                <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-              )}
+              {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Contenido *
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Contenido *</label>
               <Textarea
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
-                className={`w-full min-h-[200px] ${errors.content ? "border-red-500" : ""}`}
+                className={`min-h-[200px] w-full ${errors.content ? "border-red-500" : ""}`}
                 placeholder="Contenido de la noticia"
               />
-              {errors.content && (
-                <p className="text-red-500 text-sm mt-1">{errors.content}</p>
-              )}
+              {errors.content && <p className="mt-1 text-sm text-red-500">{errors.content}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tipo
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-700">Tipo</label>
               <Select
                 value={formData.type}
                 onValueChange={(value) => {
@@ -156,9 +139,7 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
                   }
                 }}
               >
-                <SelectTrigger
-                  className={`w-full ${errors.type ? "border-red-500" : ""}`}
-                >
+                <SelectTrigger className={`w-full ${errors.type ? "border-red-500" : ""}`}>
                   <SelectValue placeholder="Selecciona el tipo de noticia (opcional)" />
                 </SelectTrigger>
                 <SelectContent>
@@ -172,25 +153,14 @@ const EditNewsModal: React.FC<EditNewsModalProps> = ({
                   <SelectItem value="salud">Salud</SelectItem>
                 </SelectContent>
               </Select>
-              {errors.type && (
-                <p className="text-red-500 text-sm mt-1">{errors.type}</p>
-              )}
+              {errors.type && <p className="mt-1 text-sm text-red-500">{errors.type}</p>}
             </div>
 
             <div className="flex justify-end space-x-4 pt-4">
-              <Button
-                type="button"
-                onClick={onClose}
-                variant="outline"
-                disabled={isLoading}
-              >
+              <Button type="button" onClick={onClose} variant="outline" disabled={isLoading}>
                 Cancelar
               </Button>
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
+              <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
                 {isLoading ? "Actualizando..." : "Actualizar Noticia"}
               </Button>
             </div>

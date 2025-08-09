@@ -1,6 +1,7 @@
 // app/api/news/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@libsql/client";
+
 import { NewsType } from "@/types";
 
 const client = createClient({
@@ -8,10 +9,7 @@ const client = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
-export async function GET(
-  req: NextRequest,
-  props: { params: Promise<{ id: string }> }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   try {
     const params = await props.params;
     const { id } = params;
@@ -22,27 +20,18 @@ export async function GET(
     });
 
     if (result.rows.length === 0) {
-      return NextResponse.json(
-        { error: "Noticia no encontrada" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Noticia no encontrada" }, { status: 404 });
     }
 
     return NextResponse.json(result.rows[0], { status: 200 });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Error fetching news:", error);
-    return NextResponse.json(
-      { error: "Error al obtener la noticia" },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ error: "Error al obtener la noticia" }, { status: 500 });
   }
 }
 
-export async function PUT(
-  req: NextRequest,
-  props: { params: Promise<{ id: string }> }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   try {
     const params = await props.params;
     const { id } = params;
@@ -67,10 +56,7 @@ export async function PUT(
     }
 
     if (updates.length === 0) {
-      return NextResponse.json(
-        { error: "No hay campos para actualizar" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No hay campos para actualizar" }, { status: 400 });
     }
 
     args.push(id);
@@ -90,25 +76,19 @@ export async function PUT(
     if (result.rows.length === 0) {
       return NextResponse.json(
         { error: "Noticia no encontrada después de la actualización" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     return NextResponse.json(result.rows[0], { status: 200 });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Error updating news:", error);
-    return NextResponse.json(
-      { error: "Error al actualizar la noticia" },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ error: "Error al actualizar la noticia" }, { status: 500 });
   }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  props: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   try {
     const params = await props.params;
     const { id } = params;
@@ -119,22 +99,13 @@ export async function DELETE(
     });
 
     if (result.rowsAffected === 0) {
-      return NextResponse.json(
-        { error: "Noticia no encontrada" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Noticia no encontrada" }, { status: 404 });
     }
 
-    return NextResponse.json(
-      { message: "Noticia eliminada exitosamente" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Noticia eliminada exitosamente" }, { status: 200 });
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error("Error deleting news:", error);
-    return NextResponse.json(
-      { error: "Error al eliminar la noticia" },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ error: "Error al eliminar la noticia" }, { status: 500 });
   }
 }

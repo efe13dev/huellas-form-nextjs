@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
+import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(request: NextRequest) {
@@ -12,10 +13,7 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  if (
-    !session &&
-    (request.nextUrl.pathname === "/" || request.nextUrl.pathname === "/list")
-  ) {
+  if (!session && (request.nextUrl.pathname === "/" || request.nextUrl.pathname === "/list")) {
     // Redirigir a /login si no hay sesión, incluso en desarrollo
     return NextResponse.redirect(new URL("/login", request.url));
   }

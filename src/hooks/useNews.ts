@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+
 import { NewsType } from "@/types";
+
 import {
   fetchNews as fetchNewsService,
   deleteNews as deleteNewsService,
@@ -20,6 +22,7 @@ export const useNews = (initialNews: NewsType[] = []) => {
       try {
         setLoading(true);
         const result = await fetchNewsService();
+
         if (!result || (Array.isArray(result) && result.length === 0)) {
           setError("No se encontraron noticias en la base de datos.");
           setNews([]);
@@ -29,20 +32,21 @@ export const useNews = (initialNews: NewsType[] = []) => {
         }
       } catch (err) {
         console.error(err);
-        setError(
-          "Error al cargar la lista de noticias. Por favor, inténtalo de nuevo más tarde."
-        );
+        setError("Error al cargar la lista de noticias. Por favor, inténtalo de nuevo más tarde.");
       } finally {
         setLoading(false);
       }
     };
+
     getNews();
   }, []);
 
   const createNews = async (newsData: Omit<NewsType, "id" | "date">) => {
     try {
       const newNews = await createNewsService(newsData);
+
       setNews((prevNews) => [...prevNews, newNews]);
+
       return newNews;
     } catch (error) {
       console.error("Error al crear la noticia:", error);
@@ -50,16 +54,13 @@ export const useNews = (initialNews: NewsType[] = []) => {
     }
   };
 
-  const handleUpdateNews = async (
-    id: string,
-    updatedFields: Partial<NewsType>
-  ) => {
+  const handleUpdateNews = async (id: string, updatedFields: Partial<NewsType>) => {
     try {
       await updateNewsService(id, updatedFields);
       setNews((prevNews) =>
         prevNews.map((newsItem) =>
-          newsItem.id === id ? { ...newsItem, ...updatedFields } : newsItem
-        )
+          newsItem.id === id ? { ...newsItem, ...updatedFields } : newsItem,
+        ),
       );
     } catch (error) {
       console.error("Error al actualizar la noticia:", error);
@@ -86,6 +87,7 @@ export const useNews = (initialNews: NewsType[] = []) => {
 
       await deleteNewsService(id);
       setNews((prevNews) => prevNews.filter((item) => item.id !== id));
+
       return true;
     } catch (error) {
       console.error("Error al eliminar la noticia:", error);
