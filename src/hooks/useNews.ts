@@ -1,15 +1,15 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { NewsType } from "@/types";
 
-import {
-  fetchNews as fetchNewsService,
-  deleteNews as deleteNewsService,
-  updateNews as updateNewsService,
-  createNews as createNewsService,
-} from "@/app/services/newsService";
 import { deleteImageFromCloudinary } from "@/app/services/cloudinaryService";
+import {
+  createNews as createNewsService,
+  deleteNews as deleteNewsService,
+  fetchNews as fetchNewsService,
+  updateNews as updateNewsService,
+} from "@/app/services/newsService";
 import extractIdFromUrl from "@/utils/extractIdFromUrl";
 
 export const useNews = (initialNews: NewsType[] = []) => {
@@ -81,7 +81,7 @@ export const useNews = (initialNews: NewsType[] = []) => {
         try {
           await deleteImageFromCloudinary(extractIdFromUrl(newsItem.image));
         } catch (imageError) {
-          console.warn("Error al eliminar imagen de Cloudinary:", imageError);
+          console.error("Error al eliminar imagen de Cloudinary:", imageError);
         }
       }
 
