@@ -3,7 +3,11 @@ import { useState, useEffect, useCallback } from "react";
 
 import { AnimalType } from "@/types";
 
-import { fetchAnimals, deleteAnimal, updateAnimal } from "../app/services/animalService";
+import {
+  fetchAnimals,
+  deleteAnimal,
+  updateAnimal,
+} from "../app/services/animalService";
 import { deleteImageFromCloudinary } from "../app/services/cloudinaryService";
 
 import extractIdFromUrl from "@/utils/extractIdFromUrl";
@@ -23,8 +27,10 @@ export function useAnimals() {
           setAnimals(Array.isArray(result) ? result : [result]);
         }
       })
-      .catch((err) => {
-        setError("Error al cargar la lista de animales. Por favor, inténtalo de nuevo más tarde.");
+      .catch(() => {
+        setError(
+          "Error al cargar la lista de animales. Por favor, inténtalo de nuevo más tarde.",
+        );
       })
       .finally(() => setLoading(false));
   }, []);
@@ -37,32 +43,70 @@ export function useAnimals() {
     try {
       const animalData = await fetchAnimals(id);
       const animal = Array.isArray(animalData) ? animalData[0] : animalData;
-      const photos: string[] = JSON.parse(typeof animal.photos === "string" ? animal.photos : "[]");
+      const photos: string[] = JSON.parse(
+        typeof animal.photos === "string" ? animal.photos : "[]",
+      );
 
-      await Promise.all(photos.map((photo) => deleteImageFromCloudinary(extractIdFromUrl(photo))));
+      await Promise.all(
+        photos.map((photo) =>
+          deleteImageFromCloudinary(extractIdFromUrl(photo)),
+        ),
+      );
 
       await deleteAnimal(id);
-      setAnimals((prevAnimals) => prevAnimals.filter((animal) => animal.id !== id));
+      setAnimals((prevAnimals) =>
+        prevAnimals.filter((animal) => animal.id !== id),
+      );
     } catch (error) {
       // eslint-disable-next-line
-      console.error('Error al eliminar el animal:', error);
-      alert("Hubo un error al eliminar el animal");
+      console.error("Error al eliminar el animal:", error);
       throw error;
     }
   }, []);
 
-  const handleUpdateAnimal = useCallback(async (id: string, updatedFields: Partial<AnimalType>) => {
-    try {
-      await updateAnimal(id, updatedFields);
-      setAnimals((prevAnimals) =>
-        prevAnimals.map((animal) => (animal.id === id ? { ...animal, ...updatedFields } : animal)),
+  const handleUpdateAnimal = useCallback(
+    async (id: string, updatedFields: Partial<AnimalType>) => {
+      try {
+        await updateAnimal(id, updatedFields);
+        setAnimals((prevAnimals) =>
+          prevAnimals.map((animal) =>
+            animal.id === id ? { ...animal, ...updatedFields } : animal,
+          ),
+        );
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error("Error al actualizar los datos del animal:", error);
+        throw error;
+      }
+    },
+    [],
+  );
+
+  const handleToggleAdopted = useCallback(
+    async (id: string, adopted: boolean) => {
+      setAnimals((prev) =>
+        prev.map((a) => (a.id === id ? { ...a, adopted } : a)),
       );
-    } catch (error) {
-      // eslint-disable-next-line
-        console.error('Error al actualizar los datos del animal:', error);
-      alert("Hubo un error al actualizar los datos del animal");
-    }
-  }, []);
+
+      try {
+        const response = await fetch("/api/adoption", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, adopted }),
+        });
+
+        if (!response.ok)
+          throw new Error("Error al actualizar el estado de adopción");
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error("Error al actualizar el estado de adopción:", error);
+        setAnimals((prev) =>
+          prev.map((a) => (a.id === id ? { ...a, adopted: !adopted } : a)),
+        );
+      }
+    },
+    [],
+  );
 
   return {
     animals,
@@ -70,5 +114,6 @@ export function useAnimals() {
     error,
     handleDeleteAnimal,
     handleUpdateAnimal,
+    handleToggleAdopted,
   };
 }

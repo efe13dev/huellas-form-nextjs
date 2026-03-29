@@ -1,9 +1,40 @@
-import React, { useState } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState, useTransition } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { X, ChevronLeft, ChevronRight, Loader2, ImageIcon } from "lucide-react";
 
 import { AnimalType } from "@/types";
 
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+
+const editFormSchema = z.object({
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres").max(50),
+  description: z.string().min(2).max(500),
+  age: z.enum(["puppy", "young", "adult", "senior"]),
+  type: z.enum(["dog", "cat", "other"]),
+  size: z.enum(["small", "medium", "big"]),
+  genre: z.enum(["male", "female", "unknown"]),
+});
+
+type EditFormValues = z.infer<typeof editFormSchema>;
 
 interface EditAnimalModalProps {
   animal: AnimalType;
@@ -11,205 +42,260 @@ interface EditAnimalModalProps {
   onUpdate: (updatedAnimal: AnimalType) => Promise<void>;
 }
 
-const EditAnimalModal: React.FC<EditAnimalModalProps> = ({ animal, onClose, onUpdate }) => {
-  const [editedAnimal, setEditedAnimal] = useState<AnimalType>(animal);
+const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
+  animal,
+  onClose,
+  onUpdate,
+}) => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [isPending, startTransition] = useTransition();
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
+  const form = useForm<EditFormValues>({
+    resolver: zodResolver(editFormSchema),
+    defaultValues: {
+      name: animal.name,
+      description: animal.description,
+      age: animal.age as EditFormValues["age"],
+      type: animal.type as EditFormValues["type"],
+      size: animal.size as EditFormValues["size"],
+      genre: animal.genre as EditFormValues["genre"],
+    },
+  });
 
-    if (name === "description" && value.length > 500) {
-      return; // No actualizar si excede 500 caracteres
-    }
-    setEditedAnimal((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await onUpdate(editedAnimal);
-  };
+  const photos = Array.isArray(animal.photos) ? animal.photos : [];
 
   const handlePrevPhoto = () => {
-    setCurrentPhotoIndex((prev) => (prev > 0 ? prev - 1 : (editedAnimal.photos?.length ?? 0) - 1));
+    setCurrentPhotoIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1));
   };
 
   const handleNextPhoto = () => {
-    setCurrentPhotoIndex((prev) => (prev < (editedAnimal.photos?.length ?? 0) - 1 ? prev + 1 : 0));
+    setCurrentPhotoIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0));
+  };
+
+  const onSubmit = (values: EditFormValues) => {
+    startTransition(async () => {
+      await onUpdate({ ...animal, ...values });
+    });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm duration-200 animate-in fade-in">
-      <div className="relative max-h-[95vh] w-full max-w-6xl transform overflow-y-auto rounded-xl bg-white shadow-2xl transition-all duration-300 ease-out">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white p-4">
-          <h2 className="text-2xl font-bold text-gray-800">Editar Animal</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+      <div className="relative max-h-[95vh] w-full max-w-5xl transform overflow-y-auto rounded-2xl bg-white shadow-2xl duration-200 animate-in fade-in zoom-in-95">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white/80 px-6 py-4 backdrop-blur-sm">
+          <h2 className="text-xl font-bold text-gray-800">Editar Animal</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1.5 text-gray-500 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            aria-label="Cerrar"
+            className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5" />
           </button>
         </div>
+
         <div className="p-6">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-              {editedAnimal.photos && editedAnimal.photos.length > 0 ? (
-                <div className="relative h-[300px] overflow-hidden rounded-lg bg-white shadow-sm sm:h-[400px] lg:h-[500px]">
+              {photos.length > 0 ? (
+                <div className="relative h-[300px] overflow-hidden rounded-lg bg-white sm:h-[400px] lg:h-[480px]">
                   <img
-                    src={editedAnimal.photos[currentPhotoIndex]}
-                    alt={`Foto ${currentPhotoIndex + 1} de ${editedAnimal.name}`}
+                    src={photos[currentPhotoIndex]}
+                    alt={`Foto ${currentPhotoIndex + 1} de ${animal.name}`}
                     className="h-full w-full object-contain p-4"
                   />
-                  {editedAnimal.photos.length > 1 && (
-                    <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
+                  {photos.length > 1 && (
+                    <>
                       <Button
                         onClick={handlePrevPhoto}
                         variant="outline"
                         size="icon"
-                        className="bg-white/90 shadow-md backdrop-blur-sm transition-all duration-200 hover:bg-white hover:shadow-lg"
+                        className="absolute bottom-4 left-4 bg-white/90 shadow-md backdrop-blur-sm hover:bg-white"
                       >
-                        <ChevronLeft className="h-5 w-5" />
+                        <ChevronLeft className="h-4 w-4" />
                       </Button>
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-gray-500">
+                        {currentPhotoIndex + 1} / {photos.length}
+                      </div>
                       <Button
                         onClick={handleNextPhoto}
                         variant="outline"
                         size="icon"
-                        className="bg-white/90 shadow-md backdrop-blur-sm transition-all duration-200 hover:bg-white hover:shadow-lg"
+                        className="absolute bottom-4 right-4 bg-white/90 shadow-md backdrop-blur-sm hover:bg-white"
                       >
-                        <ChevronRight className="h-5 w-5" />
+                        <ChevronRight className="h-4 w-4" />
                       </Button>
-                    </div>
+                    </>
                   )}
                 </div>
               ) : (
-                <div className="flex h-[300px] w-full flex-col items-center justify-center rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 text-gray-400 sm:h-[400px] lg:h-[500px]">
-                  <span className="mb-2 text-5xl">📷</span>
-                  <p className="text-lg font-medium">No hay fotos disponibles</p>
+                <div className="flex h-[300px] w-full flex-col items-center justify-center rounded-lg bg-gray-100 sm:h-[400px] lg:h-[480px]">
+                  <ImageIcon className="mb-2 h-12 w-12 text-gray-300" />
+                  <p className="text-sm text-gray-400">
+                    No hay fotos disponibles
+                  </p>
                 </div>
               )}
             </div>
-            <div className="space-y-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-1">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Nombre
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={editedAnimal.name}
-                    onChange={handleInputChange}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm transition duration-150 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-5"
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nombre</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nombre del animal" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descripción</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Cuenta su historia..."
+                          className="min-h-[120px] resize-y"
+                          rows={5}
+                          {...field}
+                        />
+                      </FormControl>
+                      <div className="flex justify-between">
+                        <FormMessage />
+                        <p className="text-xs text-gray-400">
+                          {field.value.length}/500
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tipo</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="dog">Perro</SelectItem>
+                            <SelectItem value="cat">Gato</SelectItem>
+                            <SelectItem value="other">Otro</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div className="space-y-1">
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Descripción
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={editedAnimal.description}
-                    onChange={handleInputChange}
-                    className="min-h-[120px] w-full resize-y rounded-lg border border-gray-300 px-3 py-2 shadow-sm transition duration-150 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                    rows={5}
-                    maxLength={500}
+
+                  <FormField
+                    control={form.control}
+                    name="age"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Edad</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="puppy">Cachorro</SelectItem>
+                            <SelectItem value="young">Joven</SelectItem>
+                            <SelectItem value="adult">Adulto</SelectItem>
+                            <SelectItem value="senior">Anciano</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  <p className="mt-1 text-right text-xs text-gray-500">
-                    {editedAnimal.description.length}/500 caracteres
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="space-y-1">
-                    <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-                      Tipo
-                    </label>
-                    <select
-                      id="type"
-                      name="type"
-                      value={editedAnimal.type}
-                      onChange={handleInputChange}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-sm transition duration-150 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="dog">Perro</option>
-                      <option value="cat">Gato</option>
-                      <option value="other">Otro</option>
-                    </select>
-                  </div>
-                  <div className="space-y-1">
-                    <label htmlFor="age" className="block text-sm font-medium text-gray-700">
-                      Edad
-                    </label>
-                    <select
-                      id="age"
-                      name="age"
-                      value={editedAnimal.age}
-                      onChange={handleInputChange}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-sm transition duration-150 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="puppy">Cachorro</option>
-                      <option value="young">Joven</option>
-                      <option value="adult">Adulto</option>
-                      <option value="senior">Anciano</option>
-                    </select>
-                  </div>
-                  <div className="space-y-1">
-                    <label htmlFor="genre" className="block text-sm font-medium text-gray-700">
-                      Género
-                    </label>
-                    <select
-                      id="genre"
-                      name="genre"
-                      value={editedAnimal.genre}
-                      onChange={handleInputChange}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-sm transition duration-150 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="unknown">Desconocido</option>
-                      <option value="male">Macho</option>
-                      <option value="female">Hembra</option>
-                    </select>
-                  </div>
-                  <div className="space-y-1">
-                    <label htmlFor="size" className="block text-sm font-medium text-gray-700">
-                      Tamaño
-                    </label>
-                    <select
-                      id="size"
-                      name="size"
-                      value={editedAnimal.size}
-                      onChange={handleInputChange}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-sm transition duration-150 ease-in-out focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                    >
-                      <option value="small">Pequeño</option>
-                      <option value="medium">Mediano</option>
-                      <option value="big">Grande</option>
-                    </select>
-                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="genre"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Género</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="unknown">Desconocido</SelectItem>
+                            <SelectItem value="male">Macho</SelectItem>
+                            <SelectItem value="female">Hembra</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="size"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tamaño</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="small">Pequeño</SelectItem>
+                            <SelectItem value="medium">Mediano</SelectItem>
+                            <SelectItem value="big">Grande</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
-                <div className="border-t border-gray-100 pt-4">
-                  <div className="flex justify-end space-x-3">
-                    <Button
-                      type="button"
-                      onClick={onClose}
-                      variant="outline"
-                      className="rounded-lg border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-150 hover:bg-gray-50"
-                    >
-                      Cancelar
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-150 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      Guardar Cambios
-                    </Button>
-                  </div>
+                <div className="flex justify-end gap-3 border-t border-gray-100 pt-5">
+                  <Button type="button" variant="outline" onClick={onClose}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={isPending} className="gap-2">
+                    {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {isPending ? "Guardando..." : "Guardar Cambios"}
+                  </Button>
                 </div>
               </form>
-            </div>
+            </Form>
           </div>
         </div>
       </div>

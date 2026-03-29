@@ -11,9 +11,6 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.10.2",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
     "@hookform/resolvers": "^3.6.0",
     "@libsql/client": "0.5.0",
     "@radix-ui/react-label": "^2.0.2",
@@ -29,7 +26,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.51.5",
-    "react-icons": "^5.3.0",
     "sharp": "^0.33.4",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",

@@ -1,4 +1,10 @@
 import React from "react";
+import {
+  ChevronsLeft,
+  ChevronsRight,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -21,35 +27,25 @@ const Pagination: React.FC<PaginationProps> = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   const getVisiblePages = () => {
-    const pages = [];
-    const maxVisiblePages = 5;
+    const pages: (number | "ellipsis")[] = [];
+    const maxVisible = 5;
 
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else if (currentPage <= 3) {
+      for (let i = 1; i <= 4; i++) pages.push(i);
+      pages.push("ellipsis");
+      pages.push(totalPages);
+    } else if (currentPage >= totalPages - 2) {
+      pages.push(1);
+      pages.push("ellipsis");
+      for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
     } else {
-      if (currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push("...");
-        pages.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        pages.push("...");
-        for (let i = totalPages - 3; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push("...");
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pages.push(i);
-        }
-        pages.push("...");
-        pages.push(totalPages);
-      }
+      pages.push(1);
+      pages.push("ellipsis");
+      for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+      pages.push("ellipsis");
+      pages.push(totalPages);
     }
 
     return pages;
@@ -58,74 +54,66 @@ const Pagination: React.FC<PaginationProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="mt-6 flex flex-col items-center gap-4">
-      {/* Información de elementos */}
-      <div className="text-sm text-gray-600">
-        Mostrando {startItem} - {endItem} de {totalItems} elementos
-      </div>
+    <div className="mt-6 flex flex-col items-center gap-3">
+      <p className="text-sm text-gray-500">
+        Mostrando {startItem}&ndash;{endItem} de {totalItems} elementos
+      </p>
 
-      {/* Controles de paginación */}
-      <div className="flex items-center gap-2">
-        {/* Botón Primera página */}
+      <div className="flex items-center gap-1.5">
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="px-3"
         >
-          ««
+          <ChevronsLeft className="h-4 w-4" />
         </Button>
-
-        {/* Botón Página anterior */}
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3"
         >
-          «
+          <ChevronLeft className="h-4 w-4" />
         </Button>
 
-        {/* Números de página */}
-        {getVisiblePages().map((page, index) => (
-          <React.Fragment key={index}>
-            {page === "..." ? (
-              <span className="px-3 py-2 text-gray-500">...</span>
-            ) : (
-              <Button
-                variant={currentPage === page ? "default" : "outline"}
-                size="sm"
-                onClick={() => onPageChange(page as number)}
-                className="px-3"
-              >
-                {page}
-              </Button>
-            )}
-          </React.Fragment>
-        ))}
+        {getVisiblePages().map((page, i) =>
+          page === "ellipsis" ? (
+            <span key={`ellipsis-${i}`} className="px-2 text-gray-400">
+              &hellip;
+            </span>
+          ) : (
+            <Button
+              key={page}
+              variant={currentPage === page ? "default" : "outline"}
+              size="sm"
+              onClick={() => onPageChange(page)}
+              className="h-8 w-8 p-0"
+            >
+              {page}
+            </Button>
+          ),
+        )}
 
-        {/* Botón Página siguiente */}
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3"
         >
-          »
+          <ChevronRight className="h-4 w-4" />
         </Button>
-
-        {/* Botón Última página */}
         <Button
           variant="outline"
-          size="sm"
+          size="icon"
+          className="h-8 w-8"
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-3"
         >
-          »»
+          <ChevronsRight className="h-4 w-4" />
         </Button>
       </div>
     </div>

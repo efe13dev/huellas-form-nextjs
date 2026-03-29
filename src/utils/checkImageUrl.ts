@@ -1,13 +1,23 @@
+const cache = new Map<string, string>();
+
 const checkImageUrl = (url: string): Promise<string> => {
-  return fetch(url)
+  const cached = cache.get(url);
+
+  if (cached !== undefined) return Promise.resolve(cached);
+
+  return fetch(url, { method: "HEAD" })
     .then((response) => {
-      if (response.status === 200) {
-        return url;
-      } else {
-        return "/default-image.jpg";
-      }
+      const result = response.ok ? url : "/default-image.jpg";
+
+      cache.set(url, result);
+
+      return result;
     })
-    .catch(() => "/default-image.jpg");
+    .catch(() => {
+      cache.set(url, "/default-image.jpg");
+
+      return "/default-image.jpg";
+    });
 };
 
 export default checkImageUrl;

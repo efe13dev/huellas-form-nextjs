@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 
 import { Inter } from "next/font/google";
 
-import AuthProvider from "./AuthProvider";
+import AuthProvider from "@/app/AuthProvider";
 import "./globals.css";
 
-import { Header } from "@/components/Header";
-
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Huellas",
@@ -24,10 +25,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-amber-50`}
       >
-        <AuthProvider>
-          <Header />
-          {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
