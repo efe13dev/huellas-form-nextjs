@@ -2,12 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { AnimalType } from "@/types";
 
-import checkImageUrl from "@/utils/checkImageUrl";
-
 import DeleteConfirmDialog from "./animals/DeleteConfirmDialog";
 import EditAnimalModal from "./EditAnimalModal";
 import EmptyState from "./animals/EmptyState";
-import AnimalRow from "./animals/AnimalRow";
+import AnimalCard from "./animals/AnimalCard";
+import checkImageUrl from "@/utils/checkImageUrl";
 
 interface AnimalTableProps {
   animals: AnimalType[];
@@ -113,66 +112,23 @@ const AnimalTable: React.FC<AnimalTableProps> = ({
       <div
         className={`transition-all duration-200 ${isDialogOpen ? "blur-sm" : ""}`}
       >
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gradient-to-r from-indigo-600 to-blue-600">
-                <tr>
-                  {[
-                    { label: "Animal", className: "text-left" },
-                    {
-                      label: "Edad",
-                      className: "text-left hidden md:table-cell",
-                    },
-                    {
-                      label: "Tipo",
-                      className: "text-left hidden lg:table-cell",
-                    },
-                    {
-                      label: "Registro",
-                      className: "text-left hidden xl:table-cell",
-                    },
-                    {
-                      label: "Género",
-                      className: "text-left hidden lg:table-cell",
-                    },
-                    {
-                      label: "Tamaño",
-                      className: "text-left hidden md:table-cell",
-                    },
-                    { label: "Estado", className: "text-center" },
-                    { label: "Acciones", className: "text-right" },
-                  ].map((col) => (
-                    <th
-                      key={col.label}
-                      scope="col"
-                      className={`px-6 py-3.5 text-xs font-medium uppercase tracking-wider text-white ${col.className}`}
-                    >
-                      {col.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {processedAnimals.length === 0 ? (
-                  <EmptyState />
-                ) : (
-                  processedAnimals.map((animal) => (
-                    <AnimalRow
-                      key={animal.id}
-                      animal={animal}
-                      onToggleAdopted={onToggleAdopted}
-                      onEdit={setEditingAnimal}
-                      onDelete={setConfirmDelete}
-                      isDeleting={isDeleting}
-                      hasPendingDelete={!!confirmDelete}
-                    />
-                  ))
-                )}
-              </tbody>
-            </table>
+        {processedAnimals.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {processedAnimals.map((animal) => (
+              <AnimalCard
+                key={animal.id}
+                animal={animal}
+                onToggleAdopted={onToggleAdopted}
+                onEdit={setEditingAnimal}
+                onDelete={setConfirmDelete}
+                isDeleting={isDeleting}
+                hasPendingDelete={!!confirmDelete}
+              />
+            ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
