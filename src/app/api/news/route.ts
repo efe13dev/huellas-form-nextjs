@@ -1,7 +1,7 @@
-// app/api/news/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@libsql/client";
 
+import { auth } from "@/auth";
 import { NewsType } from "@/types";
 
 const client = createClient({
@@ -10,12 +10,23 @@ const client = createClient({
 });
 
 export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
-    const { title, content, type, image } = body as Omit<NewsType, "id" | "date">;
+    const { title, content, type, image } = body as Omit<
+      NewsType,
+      "id" | "date"
+    >;
 
     if (!title || !content || !image) {
-      return NextResponse.json({ error: "Faltan campos requeridos" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Faltan campos requeridos" },
+        { status: 400 },
+      );
     }
 
     const result = await client.batch(
@@ -28,7 +39,10 @@ export async function POST(req: NextRequest) {
       "write",
     );
 
-    return NextResponse.json({ message: "News inserted successfully", result }, { status: 201 });
+    return NextResponse.json(
+      { message: "News inserted successfully", result },
+      { status: 201 },
+    );
   } catch (error) {
     console.error("Error inserting news:", error);
 
@@ -44,12 +58,17 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    const result = await client.execute("SELECT * FROM news ORDER BY date DESC");
+    const result = await client.execute(
+      "SELECT * FROM news ORDER BY date DESC",
+    );
 
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {
     console.error("[API] Error fetching news:", error);
 
-    return NextResponse.json({ error: "Failed to fetch news" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch news" },
+      { status: 500 },
+    );
   }
 }

@@ -9,9 +9,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Contraseña", type: "password" },
       },
       authorize: async (credentials) => {
+        const validName = process.env.AUTH_USERNAME;
+        const validPassword = process.env.AUTH_PASSWORD;
+
         if (
-          credentials?.name === "huellas" &&
-          credentials?.password === "huellas-1234"
+          credentials?.name === validName &&
+          credentials?.password === validPassword
         ) {
           return { id: "1", name: "Huellas" };
         }
@@ -25,7 +28,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     authorized({ request, auth }) {
       const { pathname } = request.nextUrl;
-      if (pathname === "/" || pathname === "/list") {
+      const protectedPaths = ["/", "/list", "/news", "/news-list"];
+      if (protectedPaths.some((path) => pathname === path)) {
         return !!auth;
       }
       return true;

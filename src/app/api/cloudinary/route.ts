@@ -5,6 +5,8 @@ import { v2 as cloudinary } from "cloudinary";
 import sharp from "sharp";
 import { UploadApiResponse } from "cloudinary";
 
+import { auth } from "@/auth";
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -20,6 +22,11 @@ const WATERMARK_PATH = path.join(process.cwd(), "public", "marca-agua.png");
 const WATERMARK_OPACITY = 0.3; // Añade esta línea para controlar la opacidad
 
 export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
   try {
     const data = await request.formData();
     const image = data.get("file");
@@ -44,7 +51,12 @@ export async function POST(request: NextRequest) {
             .resize(WATERMARK_WIDTH) // Redimensiona la marca de agua
             .composite([
               {
-                input: Buffer.from([255, 255, 255, Math.round(255 * WATERMARK_OPACITY)]),
+                input: Buffer.from([
+                  255,
+                  255,
+                  255,
+                  Math.round(255 * WATERMARK_OPACITY),
+                ]),
                 raw: { width: 1, height: 1, channels: 4 },
                 tile: true,
                 blend: "dest-in",
@@ -72,11 +84,19 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
   try {
     const { public_id } = await request.json();
 
     if (!public_id) {
-      return NextResponse.json({ error: "Se requiere el ID público" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Se requiere el ID público" },
+        { status: 400 },
+      );
     }
 
     const result = await cloudinary.uploader.destroy(public_id);
@@ -109,10 +129,16 @@ async function uploadToCloudinary(buffer: Buffer): Promise<UploadApiResponse> {
 
 function handleError(error: unknown, defaultMessage: string): NextResponse {
   // eslint-disable-next-line
-  console.error(defaultMessage + ':', error);
+  console.error(defaultMessage + ":", error);
   if (error instanceof Error) {
-    return NextResponse.json({ error: defaultMessage, details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: defaultMessage, details: error.message },
+      { status: 500 },
+    );
   }
 
-  return NextResponse.json({ error: "Error desconocido: " + defaultMessage }, { status: 500 });
+  return NextResponse.json(
+    { error: "Error desconocido: " + defaultMessage },
+    { status: 500 },
+  );
 }
