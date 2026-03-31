@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useCallback } from "react";
 
+import { Pencil, Trash2 } from "lucide-react";
+
 import { NewsType } from "@/types";
 
 import EditNewsModal from "./EditNewsModal";
@@ -86,14 +88,18 @@ const NewsTable: React.FC<NewsTableProps> = ({ news, onDelete, onUpdate }) => {
             {isDeleting && (
               <div className="flex flex-col items-center">
                 <div className="mb-4 h-16 w-16 animate-spin rounded-full border-b-4 border-t-4 border-indigo-600"></div>
-                <p className="text-xl font-bold text-gray-800">Eliminando noticia...</p>
+                <p className="text-xl font-bold text-gray-800">
+                  Eliminando noticia...
+                </p>
               </div>
             )}
 
             {deleteMessage && !isDeleting && (
               <div className="flex flex-col items-center">
                 <div className="mb-4 text-6xl text-green-600">✓</div>
-                <p className="text-xl font-bold text-gray-800">{deleteMessage}</p>
+                <p className="text-xl font-bold text-gray-800">
+                  {deleteMessage}
+                </p>
               </div>
             )}
 
@@ -103,7 +109,9 @@ const NewsTable: React.FC<NewsTableProps> = ({ news, onDelete, onUpdate }) => {
                 <h3 className="mb-4 text-xl font-bold text-gray-800">
                   ¿Estás seguro de que quieres eliminar esta noticia?
                 </h3>
-                <p className="mb-6 text-gray-600">Esta acción no se puede deshacer.</p>
+                <p className="mb-6 text-gray-600">
+                  Esta acción no se puede deshacer.
+                </p>
                 <div className="flex justify-center space-x-4">
                   <button
                     onClick={handleCancelDelete}
@@ -169,26 +177,32 @@ const NewsTable: React.FC<NewsTableProps> = ({ news, onDelete, onUpdate }) => {
                       />
                     ) : (
                       <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-200">
-                        <span className="text-xs text-gray-400">Sin imagen</span>
+                        <span className="text-xs text-gray-400">
+                          Sin imagen
+                        </span>
                       </div>
                     )}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4">
-                    <div className="text-sm text-gray-900">{formatDate(newsItem.date)}</div>
+                    <div className="text-sm text-gray-900">
+                      {formatDate(newsItem.date)}
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleEdit(newsItem)}
-                        className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white transition-colors duration-200 hover:bg-blue-700"
+                        title="Editar"
+                        className="rounded-md bg-blue-600 p-2 text-white transition-colors duration-200 hover:bg-blue-700"
                       >
-                        Editar
+                        <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(newsItem.id)}
-                        className="rounded-md bg-red-600 px-3 py-1 text-sm text-white transition-colors duration-200 hover:bg-red-700"
+                        title="Eliminar"
+                        className="rounded-md bg-red-600 p-2 text-white transition-colors duration-200 hover:bg-red-700"
                       >
-                        Eliminar
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
