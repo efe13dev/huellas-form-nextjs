@@ -11,25 +11,21 @@ const client = createClient({
 
 export async function POST(req: NextRequest) {
   const session = await auth();
+
   if (!session) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
   try {
     const body = await req.json();
-    const { name, description, type, size, age, photos, genre } =
-      body as TursoData;
+    const { name, description, type, size, age, photos, genre } = body as TursoData;
 
     // Si genre no está definido, es null o es cadena vacía, asignar 'unknown'
-    const genreValue =
-      !genre || String(genre).trim() === "" ? "unknown" : genre;
+    const genreValue = !genre || String(genre).trim() === "" ? "unknown" : genre;
 
     // Validación estricta de campos requeridos
     if (!name || !description || !type || !size || !age) {
-      return NextResponse.json(
-        { error: "Faltan campos requeridos" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Faltan campos requeridos" }, { status: 400 });
     }
 
     // Validar que genre sea string y uno de los valores permitidos
@@ -39,8 +35,7 @@ export async function POST(req: NextRequest) {
     if (!allowedGenres.includes(genreStr)) {
       return NextResponse.json(
         {
-          error:
-            'El campo "genre" debe ser uno de: ' + allowedGenres.join(", "),
+          error: 'El campo "genre" debe ser uno de: ' + allowedGenres.join(", "),
         },
         { status: 400 },
       );
@@ -90,18 +85,14 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    const result = await client.execute(
-      "SELECT * FROM animals ORDER BY register_date DESC",
-    );
+    const result = await client.execute("SELECT * FROM animals ORDER BY register_date DESC");
     // Robustez extra: intenta parsear photos, si falla lo deja como []
     const safeRows = result.rows.map((row) => {
       let safePhotos: string[] = [];
 
       try {
         safePhotos = row.photos
-          ? JSON.parse(
-              typeof row.photos === "string" ? row.photos : String(row.photos),
-            )
+          ? JSON.parse(typeof row.photos === "string" ? row.photos : String(row.photos))
           : [];
         if (!Array.isArray(safePhotos)) safePhotos = [];
       } catch {
@@ -115,15 +106,13 @@ export async function GET() {
   } catch (error) {
     console.error("[API] Error fetching adoptions:", error);
 
-    return NextResponse.json(
-      { error: "Failed to fetch adoptions" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch adoptions" }, { status: 500 });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   const session = await auth();
+
   if (!session) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
@@ -146,10 +135,7 @@ export async function DELETE(req: NextRequest) {
       "write",
     );
 
-    return NextResponse.json(
-      { message: "Animal deleted successfully" },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: "Animal deleted successfully" }, { status: 200 });
   } catch (error) {
     console.error("Error deleting animal:", error);
 
@@ -162,6 +148,7 @@ export async function DELETE(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   const session = await auth();
+
   if (!session) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
@@ -172,15 +159,7 @@ export async function PATCH(req: NextRequest) {
     if (data.id) {
       const updateFields = [];
       const args = [];
-      const allowedFields = [
-        "name",
-        "description",
-        "type",
-        "size",
-        "age",
-        "genre",
-        "adopted",
-      ];
+      const allowedFields = ["name", "description", "type", "size", "age", "genre", "adopted"];
 
       for (const field of allowedFields) {
         if (data[field] !== undefined) {
@@ -202,10 +181,7 @@ export async function PATCH(req: NextRequest) {
         args,
       });
 
-      return NextResponse.json(
-        { message: "Animal actualizado exitosamente" },
-        { status: 200 },
-      );
+      return NextResponse.json({ message: "Animal actualizado exitosamente" }, { status: 200 });
     } else {
       throw new Error("Se requiere el campo ID");
     }

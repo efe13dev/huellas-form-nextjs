@@ -12,12 +12,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const validName = process.env.AUTH_USERNAME;
         const validPassword = process.env.AUTH_PASSWORD;
 
-        if (
-          credentials?.name === validName &&
-          credentials?.password === validPassword
-        ) {
+        if (credentials?.name === validName && credentials?.password === validPassword) {
           return { id: "1", name: "Huellas" };
         }
+
         return null;
       },
     }),
@@ -29,20 +27,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     authorized({ request, auth }) {
       const { pathname } = request.nextUrl;
       const protectedPaths = ["/", "/list", "/news", "/news-list"];
+
       if (protectedPaths.some((path) => pathname === path)) {
         return !!auth;
       }
+
       return true;
     },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
       }
+
       return token;
     },
     async session({ session, token }) {
       session.user = session.user ?? {};
       session.user.id = token.id as string;
+
       return session;
     },
   },

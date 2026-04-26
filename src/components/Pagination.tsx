@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  ChevronsLeft,
-  ChevronsRight,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronsLeft, ChevronsRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 

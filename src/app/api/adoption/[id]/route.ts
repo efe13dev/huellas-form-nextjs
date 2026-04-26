@@ -11,10 +11,7 @@ if (!process.env.TURSO_DATABASE_URL) {
   throw new Error("TURSO_DATABASE_URL no está configurada");
 }
 
-export async function GET(
-  req: NextRequest,
-  props: { params: Promise<{ id: string }> },
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
 
   const { id } = params;
@@ -31,7 +28,6 @@ export async function GET(
 
     return NextResponse.json(result.rows[0]);
   } catch (error) {
-    // eslint-disable-next-line
     console.error("Error fetching animal:", error);
 
     return NextResponse.json({ error: "Failed to fetch animal" });

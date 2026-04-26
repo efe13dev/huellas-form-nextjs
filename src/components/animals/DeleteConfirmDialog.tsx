@@ -26,12 +26,8 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
         {isDeleting && (
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-12 w-12 animate-spin text-indigo-600" />
-            <p className="text-lg font-bold text-gray-800">
-              Eliminando animal...
-            </p>
-            <p className="text-sm text-gray-500">
-              Por favor, espera un momento
-            </p>
+            <p className="text-lg font-bold text-gray-800">Eliminando animal...</p>
+            <p className="text-sm text-gray-500">Por favor, espera un momento</p>
           </div>
         )}
 
@@ -40,9 +36,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
               <CheckCircle2 className="h-7 w-7 text-green-600" />
             </div>
-            <p className="text-lg font-semibold text-gray-800">
-              {deleteMessage}
-            </p>
+            <p className="text-lg font-semibold text-gray-800">{deleteMessage}</p>
           </div>
         )}
 
@@ -52,27 +46,16 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
               <AlertTriangle className="h-7 w-7 text-red-600" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-900">
-                ¿Estás seguro?
-              </h3>
+              <h3 className="text-xl font-bold text-gray-900">¿Estás seguro?</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Esta acción no se puede deshacer. El animal será eliminado
-                permanentemente.
+                Esta acción no se puede deshacer. El animal será eliminado permanentemente.
               </p>
             </div>
             <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={onCancel}
-                className="rounded-lg px-6"
-              >
+              <Button variant="outline" onClick={onCancel} className="rounded-lg px-6">
                 Cancelar
               </Button>
-              <Button
-                variant="destructive"
-                onClick={onConfirm}
-                className="gap-2 rounded-lg px-6"
-              >
+              <Button variant="destructive" onClick={onConfirm} className="gap-2 rounded-lg px-6">
                 <Trash2 className="h-4 w-4" />
                 Eliminar
               </Button>

@@ -1,16 +1,11 @@
+import { CalendarDays, Pencil, Ruler, Trash2 } from "lucide-react";
 import React from "react";
-import { Pencil, Trash2 } from "lucide-react";
+
+import { AnimalType } from "@/types";
 
 import AdoptedToggle from "./AdoptedToggle";
 
-import { AnimalType } from "@/types";
-import {
-  ageLabels,
-  sizeLabels,
-  genderLabels,
-  typeLabels,
-  typeIcons,
-} from "@/lib/labels";
+import { ageLabels, genderLabels, sizeLabels, typeIcons, typeLabels } from "@/lib/labels";
 
 interface AnimalCardProps {
   animal: AnimalType;
@@ -38,33 +33,37 @@ const AnimalCard: React.FC<AnimalCardProps> = ({
 
   return (
     <div
-      className={`group relative flex items-center gap-4 rounded-xl border bg-white p-4 shadow-sm transition-shadow hover:shadow-md ${
+      className={`group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md ${
         animal.adopted
-          ? "border-l-4 border-l-green-500 border-y-gray-200 border-r-gray-200"
-          : "border-gray-200"
+          ? "border-emerald-200 ring-1 ring-emerald-100"
+          : "border-slate-200 ring-1 ring-transparent"
       }`}
     >
-      <div className="relative h-20 w-20 flex-shrink-0">
+      <div className="relative h-44 overflow-hidden bg-slate-100">
         <img
-          className="h-20 w-20 cursor-pointer rounded-lg border border-gray-100 object-cover"
+          className="h-full w-full cursor-pointer object-cover transition duration-300 group-hover:scale-105"
           src={photoUrls[0]}
           alt={animal.name}
           onClick={() => onEdit(animal)}
         />
-        <span className="absolute -bottom-1 -right-1 rounded-full bg-white px-1 text-xs shadow">
-          {typeIcons[animalType] ?? "\ud83d\udc3e"}
-        </span>
+        <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-slate-800 shadow-sm backdrop-blur">
+          <span>{typeIcons[animalType] ?? "🐾"}</span>
+          {typeLabels[animalType] ?? animal.type}
+        </div>
+        <div
+          className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-semibold shadow-sm backdrop-blur ${
+            animal.adopted ? "bg-emerald-600 text-white" : "bg-amber-400 text-slate-950"
+          }`}
+        >
+          {animal.adopted ? "Adoptado" : "Disponible"}
+        </div>
       </div>
 
-      <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-2">
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="truncate text-base font-semibold text-gray-900">
-              {animal.name}
-            </h3>
-            <p className="mt-0.5 text-sm text-gray-500">
-              {typeLabels[animalType] ?? animal.type}
-              <span className="mx-1.5 text-gray-300">&middot;</span>
+            <h3 className="truncate text-lg font-bold text-slate-950">{animal.name}</h3>
+            <p className="mt-1 text-sm text-slate-500">
               {genderLabels[animalGender] ?? "Desconocido"}
             </p>
           </div>
@@ -72,7 +71,7 @@ const AnimalCard: React.FC<AnimalCardProps> = ({
           <div className="flex flex-shrink-0 items-center gap-1">
             <button
               onClick={() => onEdit(animal)}
-              className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-xl border border-slate-200 p-2 text-blue-700 transition-colors hover:bg-blue-50 hover:text-blue-800"
               title="Editar"
             >
               <Pencil className="h-4 w-4" />
@@ -80,7 +79,7 @@ const AnimalCard: React.FC<AnimalCardProps> = ({
             <button
               onClick={() => onDelete(animal.id)}
               disabled={isDeleting || hasPendingDelete}
-              className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-xl border border-red-100 p-2 text-red-600 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-40"
               title="Eliminar"
             >
               <Trash2 className="h-4 w-4" />
@@ -88,14 +87,18 @@ const AnimalCard: React.FC<AnimalCardProps> = ({
           </div>
         </div>
 
-        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600">{animal.description}</p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
             {ageLabels[animal.age] ?? animal.age}
           </span>
-          <span className="rounded-md bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700">
+          <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
+            <Ruler className="h-3 w-3" />
             {sizeLabels[animal.size] ?? animal.size}
           </span>
-          <span className="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+            <CalendarDays className="h-3 w-3" />
             {new Date(animal.register_date).toLocaleDateString("es-ES", {
               day: "2-digit",
               month: "short",
@@ -104,7 +107,7 @@ const AnimalCard: React.FC<AnimalCardProps> = ({
           </span>
         </div>
 
-        <div className="mt-2.5">
+        <div className="mt-4 border-t border-slate-100 pt-4">
           <AdoptedToggle
             adopted={animal.adopted}
             onChange={(adopted) => onToggleAdopted(animal.id, adopted)}

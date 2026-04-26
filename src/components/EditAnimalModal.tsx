@@ -1,18 +1,10 @@
-import React, { useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronLeft, ChevronRight, ImageIcon, Loader2, Tag, X } from "lucide-react";
+import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  X,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-  ImageIcon,
-  Tag,
-} from "lucide-react";
 
 import { AnimalType } from "@/types";
-import { typeIcons, typeLabels } from "@/lib/labels";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { typeIcons } from "@/lib/labels";
 
 const editFormSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres").max(50),
@@ -50,11 +43,7 @@ interface EditAnimalModalProps {
   onUpdate: (updatedAnimal: AnimalType) => Promise<void>;
 }
 
-const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
-  animal,
-  onClose,
-  onUpdate,
-}) => {
+const EditAnimalModal: React.FC<EditAnimalModalProps> = ({ animal, onClose, onUpdate }) => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [isPending, startTransition] = useTransition();
 
@@ -95,17 +84,11 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
           <div className="flex items-center gap-2.5">
             <h2 className="text-lg font-bold text-gray-900">Editar</h2>
             <span className="text-gray-300">&middot;</span>
-            <span className="text-lg font-bold text-gray-900">
-              {animal.name}
-            </span>
-            <span className="text-base">
-              {typeIcons[animalType] ?? "\ud83d\udc3e"}
-            </span>
+            <span className="text-lg font-bold text-gray-900">{animal.name}</span>
+            <span className="text-base">{typeIcons[animalType] ?? "\ud83d\udc3e"}</span>
             <span
               className={`rounded-md px-2 py-0.5 text-xs font-medium ${
-                animal.adopted
-                  ? "bg-green-100 text-green-700"
-                  : "bg-amber-100 text-amber-700"
+                animal.adopted ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
               }`}
             >
               {animal.adopted ? "Adoptado" : "Disponible"}
@@ -165,9 +148,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
               ) : (
                 <div className="flex h-[280px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 sm:h-[340px]">
                   <ImageIcon className="mb-2 h-10 w-10 text-gray-300" />
-                  <p className="text-sm text-gray-400">
-                    No hay fotos disponibles
-                  </p>
+                  <p className="text-sm text-gray-400">No hay fotos disponibles</p>
                 </div>
               )}
             </div>
@@ -175,10 +156,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
             {/* Form section — 5 cols */}
             <div className="p-5 lg:col-span-5">
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
                     name="name"
@@ -188,11 +166,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                         <FormControl>
                           <div className="relative">
                             <Tag className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-                            <Input
-                              placeholder="Nombre del animal"
-                              className="pl-8"
-                              {...field}
-                            />
+                            <Input placeholder="Nombre del animal" className="pl-8" {...field} />
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -236,10 +210,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-xs">Tipo</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger className="h-9 text-sm">
                                   <SelectValue />
@@ -262,10 +233,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-xs">Edad</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger className="h-9 text-sm">
                                   <SelectValue />
@@ -289,19 +257,14 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-xs">Genero</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger className="h-9 text-sm">
                                   <SelectValue />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="unknown">
-                                  Desconocido
-                                </SelectItem>
+                                <SelectItem value="unknown">Desconocido</SelectItem>
                                 <SelectItem value="male">Macho</SelectItem>
                                 <SelectItem value="female">Hembra</SelectItem>
                               </SelectContent>
@@ -317,10 +280,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-xs">Tamano</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger className="h-9 text-sm">
                                   <SelectValue />
@@ -354,9 +314,7 @@ const EditAnimalModal: React.FC<EditAnimalModalProps> = ({
                       disabled={isPending}
                       className="gap-2 bg-gray-900 text-white hover:bg-gray-800"
                     >
-                      {isPending && (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      )}
+                      {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                       {isPending ? "Guardando..." : "Guardar cambios"}
                     </Button>
                   </div>

@@ -45,9 +45,7 @@ export default function Login() {
           router.push("/list");
         }
       } catch {
-        setError(
-          "Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.",
-        );
+        setError("Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.");
       }
     });
   };
@@ -65,29 +63,16 @@ export default function Login() {
       <div className="relative z-10 mx-4 w-full max-w-md duration-700 animate-in fade-in zoom-in-95">
         <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-md sm:p-10">
           <div className="mb-8 flex flex-col items-center gap-4">
-            <Image
-              src="/logo-huellas-opt.png"
-              alt="Logo Huellas"
-              width={72}
-              height={72}
-              priority
-            />
+            <Image src="/logo-huellas-opt.png" alt="Logo Huellas" width={72} height={72} priority />
             <div className="text-center">
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-                Huellas
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Web de gestión interna
-              </p>
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">Huellas</h1>
+              <p className="mt-1 text-sm text-gray-500">Web de gestión interna</p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label
-                htmlFor="username"
-                className="text-sm font-medium text-gray-600"
-              >
+              <Label htmlFor="username" className="text-sm font-medium text-gray-600">
                 Usuario
               </Label>
               <Input
@@ -104,10 +89,7 @@ export default function Login() {
             </div>
 
             <div className="space-y-2">
-              <Label
-                htmlFor="password"
-                className="text-sm font-medium text-gray-600"
-              >
+              <Label htmlFor="password" className="text-sm font-medium text-gray-600">
                 Contraseña
               </Label>
               <div className="relative">
@@ -127,11 +109,7 @@ export default function Login() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -159,9 +137,7 @@ export default function Login() {
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-gray-400">
-          Protectora de animales Huellas
-        </p>
+        <p className="mt-6 text-center text-xs text-gray-400">Protectora de animales Huellas</p>
       </div>
     </div>
   );
