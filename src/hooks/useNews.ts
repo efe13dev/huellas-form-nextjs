@@ -12,8 +12,8 @@ import {
 } from "@/app/services/newsService";
 import extractIdFromUrl from "@/utils/extractIdFromUrl";
 
-export const useNews = (initialNews: NewsType[] = []) => {
-  const [news, setNews] = useState<NewsType[]>(initialNews);
+export const useNews = () => {
+  const [news, setNews] = useState<NewsType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

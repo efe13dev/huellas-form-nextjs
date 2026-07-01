@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [router, status]);
 
   if (status !== "authenticated") {
-    return <div className="min-h-screen bg-gray-950" />;
+    return <div className="min-h-screen bg-background" />;
   }
 
   return (

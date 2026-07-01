@@ -1,11 +1,9 @@
 import React from "react";
-import { PackageOpen } from "lucide-react";
 
 const EmptyState: React.FC = () => (
-  <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50 py-16">
-    <PackageOpen className="mb-3 h-10 w-10 text-gray-300" />
-    <h3 className="text-sm font-medium text-gray-600">No hay animales registrados</h3>
-    <p className="mt-1 text-xs text-gray-400">Añade un nuevo animal para comenzar</p>
+  <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-16">
+    <p className="text-sm font-medium text-muted-foreground">No hay animales registrados</p>
+    <p className="mt-1 text-xs text-muted-foreground/70">Registra un nuevo animal para comenzar</p>
   </div>
 );
 

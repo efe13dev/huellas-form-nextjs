@@ -32,47 +32,43 @@ export default function Login() {
 
     startTransition(async () => {
       try {
-        const result = await signIn("credentials", {
-          redirect: false,
-          name,
-          password,
-        });
+        const result = await signIn("credentials", { redirect: false, name, password });
 
         if (result?.error) {
-          setError("Nombre de usuario o contraseña inválidos");
+          setError("Nombre de usuario o contrasena invalidos");
         } else {
           setIsSuccess(true);
           router.push("/list");
         }
       } catch {
-        setError("Ocurrió un error al iniciar sesión. Por favor, inténtalo de nuevo.");
+        setError("Ocurrio un error al iniciar sesion.");
       }
     });
   };
 
   if (status === "loading" || isSuccess || status === "authenticated") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-50 via-blue-50 to-amber-50">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-900" />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-blue-50 to-amber-50">
-      <div className="relative z-10 mx-4 w-full max-w-md duration-700 animate-in fade-in zoom-in-95">
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-md sm:p-10">
-          <div className="mb-8 flex flex-col items-center gap-4">
-            <Image src="/logo-huellas-opt.png" alt="Logo Huellas" width={72} height={72} priority />
-            <div className="text-center">
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900">Huellas</h1>
-              <p className="mt-1 text-sm text-gray-500">Web de gestión interna</p>
-            </div>
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 flex flex-col items-center gap-3">
+          <Image src="/logo-huellas-opt.png" alt="Logo Huellas" width={48} height={48} priority />
+          <div className="text-center">
+            <h1 className="text-lg font-semibold text-foreground">Huellas</h1>
+            <p className="text-sm text-muted-foreground">Gestion interna</p>
           </div>
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm font-medium text-gray-600">
+        <div className="rounded-lg border border-border bg-white p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="username" className="text-xs">
                 Usuario
               </Label>
               <Input
@@ -84,13 +80,12 @@ export default function Login() {
                 placeholder="Nombre de usuario"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="border-gray-300 bg-gray-50 text-gray-900 placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-blue-500"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-600">
-                Contraseña
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-xs">
+                Contrasena
               </Label>
               <div className="relative">
                 <Input
@@ -99,45 +94,43 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
-                  placeholder="Contraseña"
+                  placeholder="Contrasena"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border-gray-300 bg-gray-50 pr-10 text-gray-900 placeholder:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-blue-500"
+                  className="pr-9"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-3.5 w-3.5" />
+                  ) : (
+                    <Eye className="h-3.5 w-3.5" />
+                  )}
                 </button>
               </div>
             </div>
 
-            {error && (
-              <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 duration-300 animate-in fade-in slide-in-from-top-2">
-                {error}
-              </div>
-            )}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
-            <Button
-              type="submit"
-              disabled={isPending}
-              className="h-11 w-full rounded-lg bg-gray-900 font-semibold text-white transition-all hover:bg-gray-800 hover:shadow-lg disabled:opacity-60"
-            >
+            <Button type="submit" disabled={isPending} className="w-full">
               {isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Iniciando sesión...
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  Iniciando sesion...
                 </>
               ) : (
-                "Iniciar sesión"
+                "Iniciar sesion"
               )}
             </Button>
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-gray-400">Protectora de animales Huellas</p>
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          Protectora de animales Huellas
+        </p>
       </div>
     </div>
   );

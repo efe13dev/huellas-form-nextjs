@@ -28,9 +28,3 @@ export const typeIcons: Record<string, string> = {
   cat: "\ud83d\udc31",
   other: "\ud83d\udc3e",
 };
-
-export const genderIcons: Record<string, string> = {
-  male: "\u2642\ufe0f",
-  female: "\u2640\ufe0f",
-  unknown: "\u2753",
-};
