@@ -9,7 +9,7 @@ const AdoptedToggle: React.FC<AdoptedToggleProps> = ({ adopted, onChange }) => (
   <button
     type="button"
     role="switch"
-    aria-checked={adopted}
+    aria-checked={Boolean(adopted)}
     aria-label="Cambiar estado de adopción"
     title="Cambiar estado de adopción"
     onClick={() => onChange(!adopted)}
